@@ -1,21 +1,22 @@
 import { Router } from "express";
-import {
-  createUserRequestHandler,
-  getUserByIdRequestHandler,
-  getUsersRequestHandler,
-  updateUserEmailRequestHandler,
-} from "../controllers/user_controller.ts";
+import UserController from "../controllers/user_controller.ts";
+import UserRepositoryService from "../services/user_repository.service.ts";
+import UserService from "../services/user.service.ts";
 
 const userRouter = Router();
 
+const userRepository = new UserRepositoryService("./src/mocks/users.json");
+const userService = new UserService(userRepository);
+const userController = new UserController(userService);
+
 userRouter
   .route("/:userId")
-  .get(getUserByIdRequestHandler)
-  .put(updateUserEmailRequestHandler);
+  .get(userController.getUserByIdRequestHandler)
+  .put(userController.updateUserEmailRequestHandler);
 
 userRouter
   .route("/")
-  .get(getUsersRequestHandler)
-  .post(createUserRequestHandler);
+  .get(userController.getUsersRequestHandler)
+  .post(userController.createUserRequestHandler);
 
 export default userRouter;
