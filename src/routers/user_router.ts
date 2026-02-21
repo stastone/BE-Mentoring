@@ -12,7 +12,8 @@ const userController = new UserController(userService);
 userRouter
   .route("/:userId")
   .get(userController.getUserByIdRequestHandler)
-  .put(userController.updateUserEmailRequestHandler);
+  .put(userController.updateUserRequestHandler)
+  .delete(userController.deleteUserRequestHandler);
 
 userRouter
   .route("/")

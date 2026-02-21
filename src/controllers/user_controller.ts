@@ -51,13 +51,13 @@ export default class UserController {
       .json({ data: newUser, message: "User created successfully" });
   };
 
-  updateUserEmailRequestHandler: RequestHandler<
+  updateUserRequestHandler: RequestHandler<
     { userId: string },
     UserResponsePayload,
-    { newEmail: string }
+    { newEmail?: string; newName?: string }
   > = (req, res) => {
     const { userId } = req.params;
-    const { newEmail } = req.body;
+    const { newEmail, newName } = req.body;
     const userToUpdate = this.userService.getUserById(parseInt(userId, 10));
 
     if (!userToUpdate) {
@@ -66,11 +66,27 @@ export default class UserController {
 
     const updatedUser = this.userService.updateUser(
       userToUpdate.id,
-      userToUpdate.name,
-      newEmail,
+      newName ?? userToUpdate.name,
+      newEmail ?? userToUpdate.email,
     );
     res
       .status(200)
-      .json({ data: updatedUser, message: "User email updated successfully" });
+      .json({ data: updatedUser, message: "User updated successfully" });
+  };
+
+  deleteUserRequestHandler: RequestHandler<
+    { userId: string },
+    UserResponsePayload,
+    null
+  > = (req, res) => {
+    const { userId } = req.params;
+    const userToDelete = this.userService.getUserById(parseInt(userId, 10));
+
+    if (!userToDelete) {
+      return res.status(404).json({ data: null, message: "User not found" });
+    }
+
+    this.userService.deleteUser(userToDelete.id);
+    res.status(200).json({ data: null, message: "User deleted successfully" });
   };
 }

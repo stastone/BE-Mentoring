@@ -43,4 +43,10 @@ export default class UserService {
 
     return newUser;
   }
+
+  public deleteUser(userId: number): void {
+    const users = this.getUsers();
+    const updatedUsers = users.filter((user) => user.id !== userId);
+    this.userRepository.saveUsers(updatedUsers);
+  }
 }
