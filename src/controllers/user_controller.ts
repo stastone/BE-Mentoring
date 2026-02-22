@@ -16,6 +16,7 @@ export default class UserController {
     res,
   ) => {
     const users = this.userService.getUsers();
+
     res
       .status(200)
       .json({ data: users, message: "Users retrieved successfully" });
@@ -43,9 +44,9 @@ export default class UserController {
     UserResponsePayload,
     { name: string; email: string }
   > = (req, res) => {
-    console.log(req.body);
     const { name, email } = req.body;
     const newUser = this.userService.createUser(name, email);
+
     res
       .status(201)
       .json({ data: newUser, message: "User created successfully" });
@@ -69,6 +70,7 @@ export default class UserController {
       newName ?? userToUpdate.name,
       newEmail ?? userToUpdate.email,
     );
+
     res
       .status(200)
       .json({ data: updatedUser, message: "User updated successfully" });
@@ -87,6 +89,7 @@ export default class UserController {
     }
 
     this.userService.deleteUser(userToDelete.id);
+
     res.status(200).json({ data: null, message: "User deleted successfully" });
   };
 }
