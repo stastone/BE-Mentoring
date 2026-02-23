@@ -3,6 +3,7 @@ import ProductController from "../controllers/product_controller.ts";
 import ProductService from "../services/product/product.service.ts";
 import ProductRepositoryService from "../services/product/product_repository.service.ts";
 import { validateProductPayload } from "../middlewares/product/validateProductPayload.ts";
+import reviewRouter from "./review_router.ts";
 
 const productRouter = Router();
 
@@ -20,5 +21,7 @@ productRouter
   .route("/")
   .get(productController.getProductsRequestHandler)
   .post(validateProductPayload, productController.createProductRequestHandler);
+
+productRouter.use("/:productId/reviews", reviewRouter);
 
 export default productRouter;

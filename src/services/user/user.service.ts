@@ -2,19 +2,19 @@ import { User } from "../../models/User.ts";
 import type UserRepositoryService from "./user_repository.service.ts";
 
 export default class UserService {
-  private readonly userRepository: UserRepositoryService;
+  private readonly _userRepository: UserRepositoryService;
   constructor(userRepository: UserRepositoryService) {
-    this.userRepository = userRepository;
+    this._userRepository = userRepository;
   }
 
   public getUserById(userId: number): User | null {
-    const users = this.userRepository.getAllUsers();
+    const users = this._userRepository.getAllUsers();
 
     return users.find((user) => user.id === userId) || null;
   }
 
   public getUsers(): User[] {
-    return this.userRepository.getAllUsers();
+    return this._userRepository.getAllUsers();
   }
 
   public updateUser(id: number, name: string, email: string): User {
@@ -28,7 +28,7 @@ export default class UserService {
     users[userIndex].name = name;
     users[userIndex].email = email;
 
-    this.userRepository.saveUsers(users);
+    this._userRepository.saveUsers(users);
 
     return new User(id, name, email);
   }
@@ -39,7 +39,7 @@ export default class UserService {
 
     const users = this.getUsers();
     users.push(newUser);
-    this.userRepository.saveUsers(users);
+    this._userRepository.saveUsers(users);
 
     return newUser;
   }
@@ -47,6 +47,6 @@ export default class UserService {
   public deleteUser(userId: number): void {
     const users = this.getUsers();
     const updatedUsers = users.filter((user) => user.id !== userId);
-    this.userRepository.saveUsers(updatedUsers);
+    this._userRepository.saveUsers(updatedUsers);
   }
 }

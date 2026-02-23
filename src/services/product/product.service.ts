@@ -6,4 +6,25 @@ export default class ProductService {
   constructor(productRepositoryService: ProductRepositoryService) {
     this.productRepositoryService = productRepositoryService;
   }
+
+  getProducts() {}
+
+  getProductById(productId: number) {}
+
+  createProduct(
+    name: string,
+    price: number,
+    description: string,
+    category: string,
+  ) {}
+
+  updateProduct(
+    productId: number,
+    name: string,
+    price: number,
+    description: string,
+    category: string,
+  ) {}
+
+  deleteProduct(productId: number) {}
 }
