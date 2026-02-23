@@ -1,60 +1,54 @@
 import { type RequestHandler } from "express";
-import { type ResponsePayload } from "../types/ResponsePayload.ts";
 import { User } from "../models/User.ts";
 import type UserService from "../services/user/user.service.ts";
+import {
+  BaseController,
+  type ResponsePayload,
+} from "../utils/BaseController.ts";
 
-type UserResponsePayload = ResponsePayload<User | User[]>;
-
-export default class UserController {
+export default class UserController extends BaseController {
   private readonly userService: UserService;
   constructor(userService: UserService) {
+    super();
     this.userService = userService;
   }
 
-  getUsersRequestHandler: RequestHandler<null, UserResponsePayload, null> = (
-    _req,
-    res,
-  ) => {
-    const users = this.userService.getUsers();
+  getUsersRequestHandler: RequestHandler<null, ResponsePayload<User[]>, null> =
+    (_req, res) => {
+      const users = this.userService.getUsers();
 
-    res
-      .status(200)
-      .json({ data: users, message: "Users retrieved successfully" });
-  };
+      this.ok(res, users);
+    };
 
   getUserByIdRequestHandler: RequestHandler<
     { userId: string },
-    UserResponsePayload,
+    ResponsePayload<User>,
     null
   > = (req, res) => {
     const { userId } = req.params;
     const user = this.userService.getUserById(parseInt(userId, 10));
 
     if (!user) {
-      return res.status(404).json({ data: null, message: "User not found" });
+      return this.notFound(res, "User not found");
     }
 
-    res
-      .status(200)
-      .json({ data: user, message: "User retrieved successfully" });
+    this.ok(res, user);
   };
 
   createUserRequestHandler: RequestHandler<
     null,
-    UserResponsePayload,
+    ResponsePayload<User>,
     { name: string; email: string }
   > = (req, res) => {
     const { name, email } = req.body;
     const newUser = this.userService.createUser(name, email);
 
-    res
-      .status(201)
-      .json({ data: newUser, message: "User created successfully" });
+    this.created(res, newUser);
   };
 
   updateUserRequestHandler: RequestHandler<
     { userId: string },
-    UserResponsePayload,
+    ResponsePayload<User>,
     { newEmail?: string; newName?: string }
   > = (req, res) => {
     const { userId } = req.params;
@@ -62,7 +56,7 @@ export default class UserController {
     const userToUpdate = this.userService.getUserById(parseInt(userId, 10));
 
     if (!userToUpdate) {
-      return res.status(404).json({ data: null, message: "User not found" });
+      return this.notFound(res, "User not found");
     }
 
     const updatedUser = this.userService.updateUser(
@@ -71,25 +65,23 @@ export default class UserController {
       newEmail ?? userToUpdate.email,
     );
 
-    res
-      .status(200)
-      .json({ data: updatedUser, message: "User updated successfully" });
+    this.ok(res, updatedUser);
   };
 
   deleteUserRequestHandler: RequestHandler<
     { userId: string },
-    UserResponsePayload,
+    ResponsePayload<null>,
     null
   > = (req, res) => {
     const { userId } = req.params;
     const userToDelete = this.userService.getUserById(parseInt(userId, 10));
 
     if (!userToDelete) {
-      return res.status(404).json({ data: null, message: "User not found" });
+      return this.notFound(res, "User not found");
     }
 
     this.userService.deleteUser(userToDelete.id);
 
-    res.status(200).json({ data: null, message: "User deleted successfully" });
+    this.ok(res, null);
   };
 }

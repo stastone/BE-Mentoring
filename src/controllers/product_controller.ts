@@ -1,48 +1,46 @@
 import { type RequestHandler } from "express";
-import { type ResponsePayload } from "../types/ResponsePayload.ts";
 import type { Product } from "../models/Product.ts";
 import type ProductService from "../services/product/product.service.ts";
+import {
+  BaseController,
+  type ResponsePayload,
+} from "../utils/BaseController.ts";
 
-type ProductResponsePayload = ResponsePayload<Product | Product[]>;
-
-export default class ProductController {
+export default class ProductController extends BaseController {
   private readonly productService: ProductService;
   constructor(productService: ProductService) {
+    super();
     this.productService = productService;
   }
 
   getProductsRequestHandler: RequestHandler<
     null,
-    ProductResponsePayload,
+    ResponsePayload<Product[]>,
     null
   > = (_req, res) => {
     const products = this.productService.getProducts();
 
-    res
-      .status(200)
-      .json({ data: products, message: "Products retrieved successfully" });
+    this.ok(res, products);
   };
 
   getProductByIdRequestHandler: RequestHandler<
     { productId: string },
-    ProductResponsePayload,
+    ResponsePayload<Product>,
     null
   > = (req, res) => {
     const { productId } = req.params;
     const product = this.productService.getProductById(parseInt(productId, 10));
 
     if (!product) {
-      return res.status(404).json({ data: null, message: "Product not found" });
+      return this.notFound(res, "Product not found");
     }
 
-    res
-      .status(200)
-      .json({ data: product, message: "Product retrieved successfully" });
+    this.ok(res, product);
   };
 
   createProductRequestHandler: RequestHandler<
     null,
-    ProductResponsePayload,
+    ResponsePayload<Product>,
     { name: string; price: number; description: string; category: string }
   > = (req, res) => {
     const { name, price, description, category } = req.body;
@@ -53,14 +51,12 @@ export default class ProductController {
       category,
     );
 
-    res
-      .status(201)
-      .json({ data: newProduct, message: "Product created successfully" });
+    this.created(res, newProduct);
   };
 
   updateProductRequestHandler: RequestHandler<
     { productId: string },
-    ProductResponsePayload,
+    ResponsePayload<Product>,
     {
       newName?: string;
       newPrice?: number;
@@ -75,7 +71,7 @@ export default class ProductController {
     );
 
     if (!productToUpdate) {
-      return res.status(404).json({ data: null, message: "Product not found" });
+      return this.notFound(res, "Product not found");
     }
 
     const updatedProduct = this.productService.updateProduct(
@@ -86,14 +82,12 @@ export default class ProductController {
       newCategory ?? productToUpdate.category,
     );
 
-    res
-      .status(200)
-      .json({ data: updatedProduct, message: "Product updated successfully" });
+    this.ok(res, updatedProduct);
   };
 
   deleteProductRequestHandler: RequestHandler<
     { productId: string },
-    ProductResponsePayload,
+    ResponsePayload<null>,
     null
   > = (req, res) => {
     const { productId } = req.params;
@@ -102,13 +96,11 @@ export default class ProductController {
     );
 
     if (!productToDelete) {
-      return res.status(404).json({ data: null, message: "Product not found" });
+      return this.notFound(res, "Product not found");
     }
 
     this.productService.deleteProduct(productToDelete.id);
 
-    res
-      .status(200)
-      .json({ data: null, message: "Product deleted successfully" });
+    this.ok(res, null);
   };
 }
