@@ -1,5 +1,5 @@
 import { type RequestHandler } from "express";
-import { User } from "../models/User.ts";
+import type { User } from "../models/User.ts";
 import type UserService from "../services/user.service.ts";
 import {
   BaseController,

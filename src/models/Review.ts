@@ -1,4 +1,4 @@
-import { Column, Entity, ForeignKey, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./Product.ts";
 import { User } from "./User.ts";
 
@@ -13,10 +13,10 @@ export class Review {
   @Column()
   public rating: number;
 
-  @ForeignKey(() => Product)
+  @ManyToOne(() => Product)
   public productId: number;
 
-  @ForeignKey(() => User)
+  @ManyToOne(() => User)
   public userId: number;
 
   constructor(

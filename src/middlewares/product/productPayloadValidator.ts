@@ -7,7 +7,7 @@ export const productPayloadValidator = (
     null,
     { name: string; price: number; description?: string; category: string }
   >,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   if (!req.body) {

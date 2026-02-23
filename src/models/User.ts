@@ -12,7 +12,7 @@ export class User {
   public email: string;
 
   @Column()
-  public password!: string;
+  public password: string;
 
   @Column({ nullable: true })
   public refreshToken?: string;
@@ -21,13 +21,13 @@ export class User {
     id: number,
     name: string,
     email: string,
-    password?: string,
+    password: string,
     refreshToken?: string,
   ) {
     this.id = id;
     this.name = name;
     this.email = email;
-    if (password) this.password = password;
+    this.password = password;
     if (refreshToken) this.refreshToken = refreshToken;
   }
 

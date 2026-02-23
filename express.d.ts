@@ -1,9 +1,11 @@
-import type { User } from "../models/User.ts";
+import "express";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: {
+        id: number;
+      };
     }
   }
 }

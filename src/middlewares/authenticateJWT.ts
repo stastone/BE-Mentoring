@@ -1,4 +1,4 @@
-import type { RequestHandler } from "express";
+import type { RequestHandler, Request } from "express";
 import { UnauthorizedError } from "../types/Error.ts";
 import jwt from "jsonwebtoken";
 
@@ -10,7 +10,7 @@ export interface JwtPayload {
   exp?: number;
 }
 
-export const authenticateJWT: RequestHandler = (req, _res, next) => {
+export const authenticateJWT: RequestHandler = (req: Request, _res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new UnauthorizedError("No token provided");
@@ -23,7 +23,7 @@ export const authenticateJWT: RequestHandler = (req, _res, next) => {
 
   try {
     const payload = jwt.verify(token, ACCESS_TOKEN_SECRET) as JwtPayload;
-    req.user = payload; // set proper user
+    req.user = { id: payload.userId }; // set proper user
     next();
   } catch {
     throw new UnauthorizedError("Invalid or expired token");

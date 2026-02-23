@@ -1,5 +1,5 @@
 import type { Repository } from "typeorm";
-import { User } from "../models/User.ts";
+import type { User } from "../models/User.ts";
 import { BadRequestError, NotFoundError } from "../types/Error.ts";
 
 export default class UserService {

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { Repository } from "typeorm";
-import { User } from "../models/User.ts";
+import type { User } from "../models/User.ts";
 import { UnauthorizedError, BadRequestError } from "../types/Error.ts";
 import {
   signAccessToken,
