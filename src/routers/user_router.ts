@@ -1,12 +1,12 @@
 import { Router } from "express";
 import UserController from "../controllers/user_controller.ts";
-
-import UserService from "../services/user/user.service.ts";
-import UserRepositoryService from "../services/user/user_repository.service.ts";
+import dataSource from "../DataSource.ts";
+import UserService from "../services/user.service.ts";
+import type { User } from "../models/User.ts";
 
 const userRouter = Router();
 
-const userRepository = new UserRepositoryService("./src/mocks/users.json");
+const userRepository = dataSource.getRepository<User>("User");
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 

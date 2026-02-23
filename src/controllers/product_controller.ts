@@ -86,11 +86,8 @@ export default class ProductController extends BaseController {
     null
   > = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const productToDelete = await this.productService.getProductById(
-      parseInt(productId, 10),
-    );
 
-    await this.productService.deleteProduct(productToDelete.id);
+    await this.productService.deleteProduct(parseInt(productId, 10));
 
     this.ok(res, null);
   });
