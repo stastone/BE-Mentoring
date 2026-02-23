@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { BadRequestError } from "../../types/Error.ts";
 
 export const productPayloadValidator = (
   req: Request<
@@ -12,15 +13,15 @@ export const productPayloadValidator = (
   const { name, price, category } = req.body;
 
   if (typeof name !== "string") {
-    return res.status(400).json({ data: null, message: "Invalid name" });
+    throw new BadRequestError("Invalid name");
   }
 
   if (typeof price !== "number") {
-    return res.status(400).json({ data: null, message: "Invalid price" });
+    throw new BadRequestError("Invalid price");
   }
 
   if (typeof category !== "string") {
-    return res.status(400).json({ data: null, message: "Invalid category" });
+    throw new BadRequestError("Invalid category");
   }
 
   next();

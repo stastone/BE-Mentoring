@@ -1,5 +1,6 @@
 import type { Repository } from "typeorm";
 import type { Product } from "../models/Product.ts";
+import { BadRequestError, NotFoundError } from "../types/Error.ts";
 
 export default class ProductService {
   private readonly _productRepository: Repository<Product>;
@@ -23,7 +24,7 @@ export default class ProductService {
     category: string,
   ) {
     if (price <= 0) {
-      throw new Error("Invalid price");
+      throw new BadRequestError("Invalid price");
     }
 
     const product = this._productRepository.create({
@@ -48,7 +49,7 @@ export default class ProductService {
     });
 
     if (!product) {
-      throw new Error("Product not found");
+      throw new NotFoundError("Product not found");
     }
 
     product.name = name;
@@ -63,7 +64,7 @@ export default class ProductService {
     const result = await this._productRepository.delete(productId);
 
     if (!result.affected) {
-      throw new Error("Product not found");
+      throw new NotFoundError("Product not found");
     }
   }
 }

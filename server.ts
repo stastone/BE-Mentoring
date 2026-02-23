@@ -1,9 +1,12 @@
 import express from "express";
 import userRouter from "./src/routers/user_router.ts";
+import { errorHandler } from "./src/middlewares/errorHandler.ts";
 
 const app = express();
 
 app.use(express.json());
+
+app.use(errorHandler);
 
 app.use("/users", userRouter);
 
