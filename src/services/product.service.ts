@@ -14,7 +14,13 @@ export default class ProductService {
   }
 
   async getProductById(productId: number) {
-    return this._productRepository.findOneBy({ id: productId });
+    const product = await this._productRepository.findOneBy({ id: productId });
+
+    if (!product) {
+      throw new NotFoundError("Product not found");
+    }
+
+    return product;
   }
 
   async createProduct(
@@ -41,8 +47,8 @@ export default class ProductService {
     productId: number,
     name: string,
     price: number,
-    description: string,
     category: string,
+    description?: string,
   ) {
     const product = await this._productRepository.findOne({
       where: { id: productId },

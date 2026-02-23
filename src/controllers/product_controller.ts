@@ -5,6 +5,7 @@ import {
   BaseController,
   type ResponsePayload,
 } from "../utils/BaseController.ts";
+import { catchAsync } from "../utils/catchAsync.ts";
 
 export default class ProductController extends BaseController {
   private readonly productService: ProductService;
@@ -17,30 +18,32 @@ export default class ProductController extends BaseController {
     null,
     ResponsePayload<Product[]>,
     null
-  > = (_req, res) => {
-    const products = this.productService.getProducts();
+  > = catchAsync(async (_req, res) => {
+    const products = await this.productService.getProducts();
 
     this.ok(res, products);
-  };
+  });
 
   getProductByIdRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<Product>,
     null
-  > = (req, res) => {
+  > = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const product = this.productService.getProductById(parseInt(productId, 10));
+    const product = await this.productService.getProductById(
+      parseInt(productId, 10),
+    );
 
     this.ok(res, product);
-  };
+  });
 
   createProductRequestHandler: RequestHandler<
     null,
     ResponsePayload<Product>,
     { name: string; price: number; description: string; category: string }
-  > = (req, res) => {
+  > = catchAsync(async (req, res) => {
     const { name, price, description, category } = req.body;
-    const newProduct = this.productService.createProduct(
+    const newProduct = await this.productService.createProduct(
       name,
       price,
       description,
@@ -48,7 +51,7 @@ export default class ProductController extends BaseController {
     );
 
     this.created(res, newProduct);
-  };
+  });
 
   updateProductRequestHandler: RequestHandler<
     { productId: string },
@@ -59,36 +62,36 @@ export default class ProductController extends BaseController {
       newDescription?: string;
       newCategory?: string;
     }
-  > = (req, res) => {
+  > = catchAsync(async (req, res) => {
     const { productId } = req.params;
     const { newName, newPrice, newDescription, newCategory } = req.body;
-    const productToUpdate = this.productService.getProductById(
+    const productToUpdate = await this.productService.getProductById(
       parseInt(productId, 10),
     );
 
-    const updatedProduct = this.productService.updateProduct(
+    const updatedProduct = await this.productService.updateProduct(
       productToUpdate.id,
       newName ?? productToUpdate.name,
       newPrice ?? productToUpdate.price,
-      newDescription ?? productToUpdate.description,
       newCategory ?? productToUpdate.category,
+      newDescription ?? productToUpdate.description,
     );
 
     this.ok(res, updatedProduct);
-  };
+  });
 
   deleteProductRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<null>,
     null
-  > = (req, res) => {
+  > = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const productToDelete = this.productService.getProductById(
+    const productToDelete = await this.productService.getProductById(
       parseInt(productId, 10),
     );
 
-    this.productService.deleteProduct(productToDelete.id);
+    await this.productService.deleteProduct(productToDelete.id);
 
     this.ok(res, null);
-  };
+  });
 }
