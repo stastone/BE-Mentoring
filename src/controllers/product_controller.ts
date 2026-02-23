@@ -1,6 +1,6 @@
 import { type RequestHandler } from "express";
 import type { Product } from "../models/Product.ts";
-import type ProductService from "../services/product/product.service.ts";
+import type ProductService from "../services/product.service.ts";
 import {
   BaseController,
   type ResponsePayload,
@@ -30,10 +30,6 @@ export default class ProductController extends BaseController {
   > = (req, res) => {
     const { productId } = req.params;
     const product = this.productService.getProductById(parseInt(productId, 10));
-
-    if (!product) {
-      return this.notFound(res, "Product not found");
-    }
 
     this.ok(res, product);
   };
@@ -70,10 +66,6 @@ export default class ProductController extends BaseController {
       parseInt(productId, 10),
     );
 
-    if (!productToUpdate) {
-      return this.notFound(res, "Product not found");
-    }
-
     const updatedProduct = this.productService.updateProduct(
       productToUpdate.id,
       newName ?? productToUpdate.name,
@@ -94,10 +86,6 @@ export default class ProductController extends BaseController {
     const productToDelete = this.productService.getProductById(
       parseInt(productId, 10),
     );
-
-    if (!productToDelete) {
-      return this.notFound(res, "Product not found");
-    }
 
     this.productService.deleteProduct(productToDelete.id);
 

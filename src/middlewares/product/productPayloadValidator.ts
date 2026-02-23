@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
-export const validateProductPayload = (
+export const productPayloadValidator = (
   req: Request<
     { productId: string } | null,
     null,
@@ -11,15 +11,15 @@ export const validateProductPayload = (
 ) => {
   const { name, price, category } = req.body;
 
-  if (!name || typeof name !== "string") {
+  if (typeof name !== "string") {
     return res.status(400).json({ data: null, message: "Invalid name" });
   }
 
-  if (typeof price !== "number" || price <= 0) {
+  if (typeof price !== "number") {
     return res.status(400).json({ data: null, message: "Invalid price" });
   }
 
-  if (!category || typeof category !== "string") {
+  if (typeof category !== "string") {
     return res.status(400).json({ data: null, message: "Invalid category" });
   }
 
