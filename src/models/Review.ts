@@ -1,8 +1,22 @@
+import { Column, Entity, ForeignKey, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from "./Product.ts";
+import { User } from "./User.ts";
+
+@Entity()
 export class Review {
+  @PrimaryGeneratedColumn()
   public readonly id: number;
+
+  @Column()
   public content: string;
+
+  @Column()
   public rating: number;
+
+  @ForeignKey(() => Product)
   public productId: number;
+
+  @ForeignKey(() => User)
   public userId: number;
 
   constructor(
