@@ -2,15 +2,15 @@ export class Product {
   public readonly id: number;
   public name: string;
   public price: number;
-  public description: string;
+  public description?: string;
   public category: string;
 
   constructor(
     id: number,
     name: string,
     price: number,
-    description: string,
     category: string,
+    description?: string,
   ) {
     this.id = id;
     this.name = name;
