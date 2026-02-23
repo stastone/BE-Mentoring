@@ -11,10 +11,24 @@ export class User {
   @Column()
   public email: string;
 
-  constructor(id: number, name: string, email: string) {
+  @Column()
+  public password!: string;
+
+  @Column({ nullable: true })
+  public refreshToken?: string;
+
+  constructor(
+    id: number,
+    name: string,
+    email: string,
+    password?: string,
+    refreshToken?: string,
+  ) {
     this.id = id;
     this.name = name;
     this.email = email;
+    if (password) this.password = password;
+    if (refreshToken) this.refreshToken = refreshToken;
   }
 
   public getUserInfo(): string {
