@@ -1,7 +1,8 @@
 import { Router } from "express";
 import UserController from "../controllers/user_controller.ts";
-import UserRepositoryService from "../services/user_repository.service.ts";
-import UserService from "../services/user.service.ts";
+
+import UserService from "../services/user/user.service.ts";
+import UserRepositoryService from "../services/user/user_repository.service.ts";
 
 const userRouter = Router();
 

@@ -1,10 +1,12 @@
 import { Router } from "express";
 import ProductController from "../controllers/product_controller.ts";
-import ProductService from "../services/product.service.ts";
+import ProductService from "../services/product/product.service.ts";
+import ProductRepositoryService from "../services/product/product_repository.service.ts";
 
 const productRouter = Router();
 
-const productService = new ProductService();
+const productRepository = new ProductRepositoryService();
+const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
 productRouter

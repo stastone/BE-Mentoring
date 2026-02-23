@@ -1,5 +1,5 @@
 import fs from "fs";
-import type { User } from "../models/User.ts";
+import type { User } from "../../models/User.ts";
 
 export default class UserRepositoryService {
   private _filePath: string;

@@ -1,4 +1,4 @@
-import { User } from "../models/User.ts";
+import { User } from "../../models/User.ts";
 import type UserRepositoryService from "./user_repository.service.ts";
 
 export default class UserService {

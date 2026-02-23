@@ -1,7 +1,7 @@
 import { type RequestHandler } from "express";
-
 import { type ResponsePayload } from "../types/ResponsePayload.ts";
 import type { Product } from "../models/Product.ts";
+import type ProductService from "../services/product/product.service.ts";
 
 type ProductResponsePayload = ResponsePayload<Product | Product[]>;
 
