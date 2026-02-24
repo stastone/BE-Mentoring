@@ -45,25 +45,4 @@ export default class UserService {
 
     return this._userRepository.save(user);
   }
-
-  public createUser(name: string, email: string) {
-    if (!name || !email) {
-      throw new BadRequestError("Name and email are required");
-    }
-
-    const user = this._userRepository.create({
-      name,
-      email,
-    });
-
-    return this._userRepository.save(user);
-  }
-
-  public async deleteUser(userId: number) {
-    const result = await this._userRepository.delete(userId);
-
-    if (!result.affected) {
-      throw new NotFoundError("User not found");
-    }
-  }
 }

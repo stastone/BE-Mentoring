@@ -13,12 +13,8 @@ const userController = new UserController(userService);
 userRouter
   .route("/:userId")
   .get(userController.getUserByIdRequestHandler)
-  .put(userController.updateUserRequestHandler)
-  .delete(userController.deleteUserRequestHandler);
+  .put(userController.updateUserRequestHandler);
 
-userRouter
-  .route("/")
-  .get(userController.getUsersRequestHandler)
-  .post(userController.createUserRequestHandler);
+userRouter.route("/").get(userController.getUsersRequestHandler);
 
 export default userRouter;

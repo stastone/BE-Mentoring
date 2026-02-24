@@ -32,17 +32,6 @@ export default class UserController extends BaseController {
     this.ok(res, user);
   });
 
-  createUserRequestHandler: RequestHandler<
-    null,
-    ResponsePayload<User>,
-    { name: string; email: string }
-  > = catchAsync(async (req, res) => {
-    const { name, email } = req.body;
-    const newUser = await this.userService.createUser(name, email);
-
-    this.created(res, newUser);
-  });
-
   updateUserRequestHandler: RequestHandler<
     { userId: string },
     ResponsePayload<User>,
@@ -62,17 +51,5 @@ export default class UserController extends BaseController {
     );
 
     this.ok(res, updatedUser);
-  });
-
-  deleteUserRequestHandler: RequestHandler<
-    { userId: string },
-    ResponsePayload<null>,
-    null
-  > = catchAsync(async (req, res) => {
-    const { userId } = req.params;
-
-    await this.userService.deleteUser(parseInt(userId, 10));
-
-    this.ok(res, null);
   });
 }
