@@ -23,7 +23,7 @@ export const authenticateJWT: RequestHandler = (req: Request, _res, next) => {
 
   try {
     const payload = jwt.verify(token, ACCESS_TOKEN_SECRET) as JwtPayload;
-    req.user = { id: payload.userId }; // set proper user
+    req.user = { id: payload.userId };
     next();
   } catch {
     throw new UnauthorizedError("Invalid or expired token");

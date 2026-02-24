@@ -3,11 +3,7 @@ import jwt from "jsonwebtoken";
 import type { Repository } from "typeorm";
 import type { User } from "../models/User.ts";
 import { UnauthorizedError, BadRequestError } from "../types/Error.ts";
-import {
-  signAccessToken,
-  signRefreshToken,
-  setTokens,
-} from "../utils/jwtUtils.ts";
+import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.ts";
 import type { JwtPayload } from "../middlewares/authenticateJWT.ts";
 
 export class AuthService {
@@ -48,28 +44,13 @@ export class AuthService {
       throw new UnauthorizedError("Invalid credentials");
     }
 
-    const tokens = setTokens(user);
+    const accessToken = signAccessToken(user.id);
+    const refreshToken = signRefreshToken(user.id);
+
+    user.refreshToken = refreshToken;
     await this._userRepository.save(user);
 
-    return { user, ...tokens };
-  }
-
-  private async verifyToken(token: string, type: "access" | "refresh") {
-    try {
-      if (type === "access") {
-        return jwt.verify(
-          token,
-          process.env.ACCESS_TOKEN_SECRET || "access_secret",
-        ) as JwtPayload;
-      } else {
-        return jwt.verify(
-          token,
-          process.env.REFRESH_TOKEN_SECRET || "refresh_secret",
-        ) as JwtPayload;
-      }
-    } catch {
-      throw new UnauthorizedError("Invalid or expired token");
-    }
+    return { user, accessToken, refreshToken };
   }
 
   async rotateRefreshToken(refreshToken: string) {
@@ -92,11 +73,29 @@ export class AuthService {
     const payload = await this.verifyToken(refreshToken, "refresh");
     const user = await this._userRepository.findOneBy({ id: payload.userId });
 
-    if (user) {
+    if (user && user.refreshToken === refreshToken) {
       user.refreshToken = undefined;
       await this._userRepository.save(user);
     }
 
     return true;
+  }
+
+  private async verifyToken(token: string, type: "access" | "refresh") {
+    try {
+      if (type === "access") {
+        return jwt.verify(
+          token,
+          process.env.ACCESS_TOKEN_SECRET || "access_secret",
+        ) as JwtPayload;
+      } else {
+        return jwt.verify(
+          token,
+          process.env.REFRESH_TOKEN_SECRET || "refresh_secret",
+        ) as JwtPayload;
+      }
+    } catch {
+      throw new UnauthorizedError("Invalid or expired token");
+    }
   }
 }

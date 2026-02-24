@@ -18,10 +18,3 @@ export function signRefreshToken(userId: number): string {
     expiresIn: REFRESH_TOKEN_EXPIRES_IN,
   });
 }
-
-export function setTokens(user: User) {
-  const accessToken = signAccessToken(user.id);
-  const refreshToken = signRefreshToken(user.id);
-  user.refreshToken = refreshToken;
-  return { accessToken, refreshToken };
-}
