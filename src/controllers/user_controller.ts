@@ -14,7 +14,7 @@ export default class UserController extends BaseController {
     this.userService = userService;
   }
 
-  getUsersRequestHandler: RequestHandler<null, ResponsePayload<User[]>, null> =
+  getUsersRequestHandler: RequestHandler<never, ResponsePayload<User[]>, null> =
     catchAsync(async (_req, res) => {
       const users = await this.userService.getUsers();
 

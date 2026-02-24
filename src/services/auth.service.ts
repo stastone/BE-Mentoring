@@ -44,7 +44,7 @@ export class AuthService {
       throw new UnauthorizedError("Invalid credentials");
     }
 
-    const accessToken = signAccessToken(user.id);
+    const accessToken = signAccessToken(user.id, user.role);
     const refreshToken = signRefreshToken(user.id);
 
     user.refreshToken = refreshToken;
@@ -60,7 +60,7 @@ export class AuthService {
       throw new UnauthorizedError("Invalid refresh token");
     }
 
-    const newAccessToken = signAccessToken(user.id);
+    const newAccessToken = signAccessToken(user.id, user.role);
     const newRefreshToken = signRefreshToken(user.id);
 
     user.refreshToken = newRefreshToken;

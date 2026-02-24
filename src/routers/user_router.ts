@@ -3,6 +3,7 @@ import UserController from "../controllers/user_controller.ts";
 import dataSource from "../DataSource.ts";
 import UserService from "../services/user.service.ts";
 import type { User } from "../models/User.ts";
+import { restrictTo } from "../middlewares/restrictTo.ts";
 
 const userRouter = Router();
 
@@ -15,6 +16,8 @@ userRouter
   .get(userController.getUserByIdRequestHandler)
   .put(userController.updateUserRequestHandler);
 
-userRouter.route("/").get(userController.getUsersRequestHandler);
+userRouter
+  .route("/")
+  .get(restrictTo(["admin"]), userController.getUsersRequestHandler);
 
 export default userRouter;

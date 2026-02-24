@@ -6,6 +6,7 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";
 
 export interface JwtPayload {
   userId: number;
+  userRole: "user" | "admin";
   iat?: number;
   exp?: number;
 }
@@ -23,7 +24,7 @@ export const authenticateJWT: RequestHandler = (req: Request, _res, next) => {
 
   try {
     const payload = jwt.verify(token, ACCESS_TOKEN_SECRET) as JwtPayload;
-    req.user = { id: payload.userId };
+    req.user = { id: payload.userId, role: payload.userRole };
     next();
   } catch {
     throw new UnauthorizedError("Invalid or expired token");
