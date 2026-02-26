@@ -46,3 +46,9 @@ export class NotFoundError extends BaseError {
     super(message, 404);
   }
 }
+
+export class NotImplementedError extends BaseError {
+  constructor(message: string = "Not Implemented") {
+    super(message, 501);
+  }
+}

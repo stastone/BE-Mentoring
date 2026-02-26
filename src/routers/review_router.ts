@@ -1,6 +1,11 @@
 import { Router } from "express";
+import { NotImplementedError } from "../types/Error.ts";
 
 const reviewRouter = Router({ mergeParams: true });
+
+reviewRouter.use((_req, _res, _next) => {
+  throw new NotImplementedError("Review routes are not implemented yet");
+});
 
 reviewRouter
   .route("/")
