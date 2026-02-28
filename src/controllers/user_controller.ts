@@ -1,61 +1,55 @@
 import { type RequestHandler } from "express";
-import { User } from "../models/User.ts";
-import { type ResponsePayload } from "../types/ResponsePayload.ts";
+import type { User } from "../models/User.ts";
+import type UserService from "../services/user.service.ts";
+import {
+  BaseController,
+  type ResponsePayload,
+} from "../utils/BaseController.ts";
+import { catchAsync } from "../utils/catchAsync.ts";
 
-type UserResponsePayload = ResponsePayload<User | User[]>;
-
-export const getUsersRequestHandler: RequestHandler<
-  null,
-  UserResponsePayload,
-  null
-> = (_req, res) => {
-  const users = User.getUsers();
-  res
-    .status(200)
-    .json({ data: users, message: "Users retrieved successfully" });
-};
-
-export const getUserByIdRequestHandler: RequestHandler<
-  { userId: string },
-  UserResponsePayload,
-  null
-> = (req, res) => {
-  const { userId } = req.params;
-  const user = User.getUserById(parseInt(userId, 10));
-
-  if (!user) {
-    return res.status(404).json({ data: null, message: "User not found" });
+export default class UserController extends BaseController {
+  private readonly userService: UserService;
+  constructor(userService: UserService) {
+    super();
+    this.userService = userService;
   }
 
-  res.status(200).json({ data: user, message: "User retrieved successfully" });
-};
+  getUsersRequestHandler: RequestHandler<never, ResponsePayload<User[]>, null> =
+    catchAsync(async (_req, res) => {
+      const users = await this.userService.getUsers();
 
-export const createUserRequestHandler: RequestHandler<
-  null,
-  UserResponsePayload,
-  { name: string; email: string }
-> = (req, res) => {
-  console.log(req.body);
-  const { name, email } = req.body;
-  const newUser = User.createUser(name, email);
-  res.status(201).json({ data: newUser, message: "User created successfully" });
-};
+      this.ok(res, users);
+    });
 
-export const updateUserEmailRequestHandler: RequestHandler<
-  { userId: string },
-  UserResponsePayload,
-  { newEmail: string }
-> = (req, res) => {
-  const { userId } = req.params;
-  const { newEmail } = req.body;
-  const userToUpdate = User.getUserById(parseInt(userId, 10));
+  getUserByIdRequestHandler: RequestHandler<
+    { userId: string },
+    ResponsePayload<User>,
+    null
+  > = catchAsync(async (req, res) => {
+    const { userId } = req.params;
+    const user = await this.userService.getUserById(parseInt(userId, 10));
 
-  if (!userToUpdate) {
-    return res.status(404).json({ data: null, message: "User not found" });
-  }
+    this.ok(res, user);
+  });
 
-  userToUpdate.updateEmail(newEmail);
-  res
-    .status(200)
-    .json({ data: userToUpdate, message: "User email updated successfully" });
-};
+  updateUserRequestHandler: RequestHandler<
+    { userId: string },
+    ResponsePayload<User>,
+    { newEmail?: string; newName?: string }
+  > = catchAsync(async (req, res) => {
+    const { userId } = req.params;
+    const { newEmail, newName } = req.body;
+
+    const userToUpdate = await this.userService.getUserById(
+      parseInt(userId, 10),
+    );
+
+    const updatedUser = await this.userService.updateUser(
+      userToUpdate.id,
+      newName ?? userToUpdate.name,
+      newEmail ?? userToUpdate.email,
+    );
+
+    this.ok(res, updatedUser);
+  });
+}

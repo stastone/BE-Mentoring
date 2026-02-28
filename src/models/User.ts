@@ -1,41 +1,42 @@
-import fs from "fs";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity()
 export class User {
+  @PrimaryGeneratedColumn()
   public readonly id: number;
+
+  @Column()
   public name: string;
+
+  @Column()
   public email: string;
 
-  constructor(id: number, name: string, email: string) {
+  @Column()
+  public password: string;
+
+  @Column()
+  public role: "user" | "admin" = "user";
+
+  @Column({ nullable: true })
+  public refreshToken?: string;
+
+  constructor(
+    id: number,
+    name: string,
+    email: string,
+    password: string,
+    role: "user" | "admin" = "user",
+    refreshToken?: string,
+  ) {
     this.id = id;
     this.name = name;
     this.email = email;
+    this.password = password;
+    this.role = role;
+    if (refreshToken) this.refreshToken = refreshToken;
   }
 
   public getUserInfo(): string {
-    return `User ID: ${this.id}, Name: ${this.name}, Email: ${this.email}`;
-  }
-
-  public updateEmail(newEmail: string): void {
-    this.email = newEmail;
-  }
-
-  public static getUserById(userId: number): User | null {
-    const usersData = fs.readFileSync("src/mocks/users.json", "utf-8");
-    const users = JSON.parse(usersData) as User[];
-    return users.find((user) => user.id === userId) || null;
-  }
-
-  public static getUsers(): User[] {
-    const usersData = fs.readFileSync("src/mocks/users.json", "utf-8");
-    return JSON.parse(usersData) as User[];
-  }
-
-  public static createUser(name: string, email: string): User {
-    const id = Math.floor(Math.random() * 1000);
-    fs.appendFileSync(
-      "src/mocks/users.json",
-      JSON.stringify({ id, name, email }) + "\n",
-    );
-    return new User(id, name, email);
+    return `User ID: ${this.id}, Name: ${this.name}, Email: ${this.email}, Role: ${this.role}`;
   }
 }

@@ -1,21 +1,23 @@
 import { Router } from "express";
-import {
-  createUserRequestHandler,
-  getUserByIdRequestHandler,
-  getUsersRequestHandler,
-  updateUserEmailRequestHandler,
-} from "../controllers/user_controller.ts";
+import UserController from "../controllers/user_controller.ts";
+import dataSource from "../DataSource.ts";
+import UserService from "../services/user.service.ts";
+import type { User } from "../models/User.ts";
+import { restrictTo } from "../middlewares/restrictTo.ts";
 
 const userRouter = Router();
 
+const userRepository = dataSource.getRepository<User>("User");
+const userService = new UserService(userRepository);
+const userController = new UserController(userService);
+
 userRouter
   .route("/:userId")
-  .get(getUserByIdRequestHandler)
-  .put(updateUserEmailRequestHandler);
+  .get(userController.getUserByIdRequestHandler)
+  .put(userController.updateUserRequestHandler);
 
 userRouter
   .route("/")
-  .get(getUsersRequestHandler)
-  .post(createUserRequestHandler);
+  .get(restrictTo(["admin"]), userController.getUsersRequestHandler);
 
 export default userRouter;
