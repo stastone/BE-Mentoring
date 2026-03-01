@@ -4,7 +4,7 @@ import {
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
-} from "../types/Error.ts";
+} from "../types/Error.js";
 
 export const errorHandler = (
   err: unknown,

@@ -1,6 +1,6 @@
 import type { Repository } from "typeorm";
-import type { User } from "../models/User.ts";
-import { BadRequestError, NotFoundError } from "../types/Error.ts";
+import type { User } from "../models/User.js";
+import { BadRequestError, NotFoundError } from "../types/Error.js";
 
 class UserService {
   private readonly _userRepository: Repository<User>;

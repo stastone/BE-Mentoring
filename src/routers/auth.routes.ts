@@ -1,8 +1,8 @@
 import { Router } from "express";
-import dataSource from "../DataSource.ts";
-import AuthController from "../controllers/auth/auth.controller.ts";
-import type { User } from "../models/User.ts";
-import AuthService from "../services/auth.service.ts";
+import dataSource from "../DataSource.js";
+import AuthController from "../controllers/auth/auth.controller.js";
+import type { User } from "../models/User.js";
+import AuthService from "../services/auth.service.js";
 
 const userRepository = dataSource.getRepository<User>("User");
 const authService = new AuthService(userRepository);

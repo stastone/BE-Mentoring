@@ -1,6 +1,6 @@
 import type { Repository } from "typeorm";
-import type { Product } from "../models/Product.ts";
-import { BadRequestError, NotFoundError } from "../types/Error.ts";
+import type { Product } from "../models/Product.js";
+import { BadRequestError, NotFoundError } from "../types/Error.js";
 
 class ProductService {
   private readonly _productRepository: Repository<Product>;

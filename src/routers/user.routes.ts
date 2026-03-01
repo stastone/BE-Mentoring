@@ -1,9 +1,9 @@
 import { Router } from "express";
-import UserController from "../controllers/user/user.controller.ts";
-import dataSource from "../DataSource.ts";
-import UserService from "../services/user.service.ts";
-import type { User } from "../models/User.ts";
-import { restrictTo } from "../middlewares/restrictTo.ts";
+import UserController from "../controllers/user/user.controller.js";
+import dataSource from "../DataSource.js";
+import UserService from "../services/user.service.js";
+import type { User } from "../models/User.js";
+import { restrictTo } from "../middlewares/restrictTo.js";
 
 const userRouter = Router();
 

@@ -2,13 +2,15 @@
   "main": "server.ts",
   "type": "module",
   "scripts": {
-    "dev": "node --watch server.ts"
+    "build": "tsc",
+    "dev": "tsc -w & node --watch dist/server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2",
     "typeorm": "^0.3.28",
     "typescript": "^5.9.3",
     "zod": "^4.3.6"

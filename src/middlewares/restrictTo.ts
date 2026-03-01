@@ -1,5 +1,5 @@
 import type { RequestHandler, RequestParamHandler } from "express";
-import { ForbiddenError, UnauthorizedError } from "../types/Error.ts";
+import { ForbiddenError, UnauthorizedError } from "../types/Error.js";
 
 export const restrictTo = <TParams, TRes, TReq, TQuery>(
   roles: ("user" | "admin")[],

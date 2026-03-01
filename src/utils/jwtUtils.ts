@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import type { User } from "../models/User.ts";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";
 const REFRESH_TOKEN_SECRET =

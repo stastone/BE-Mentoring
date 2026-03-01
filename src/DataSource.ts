@@ -1,10 +1,12 @@
 import { DataSource } from "typeorm";
-import { dirname } from "path";
+
+import { User } from "./models/User.js";
+import { Product } from "./models/Product.js";
 
 const dataSource = new DataSource({
   type: "sqlite",
-  database: "db1.backend_mentoring",
-  entities: [dirname + "/models/*{.ts}"],
+  database: "backend_mentoring.db",
+  entities: [User, Product],
   synchronize: true,
 });
 

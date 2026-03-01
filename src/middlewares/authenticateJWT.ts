@@ -1,5 +1,5 @@
 import type { RequestHandler, Request } from "express";
-import { UnauthorizedError } from "../types/Error.ts";
+import { UnauthorizedError } from "../types/Error.js";
 import jwt from "jsonwebtoken";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";

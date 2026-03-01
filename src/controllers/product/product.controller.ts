@@ -1,8 +1,8 @@
 import { type RequestHandler } from "express";
-import type { Product } from "../../models/Product.ts";
-import type ProductService from "../../services/product.service.ts";
-import { BaseController, type ResponsePayload } from "../base.controller.ts";
-import { catchAsync } from "../../utils/catchAsync.ts";
+import type { Product } from "../../models/Product.js";
+import type ProductService from "../../services/product.service.js";
+import { BaseController, type ResponsePayload } from "../base.controller.js";
+import { catchAsync } from "../../utils/catchAsync.js";
 
 class ProductController extends BaseController {
   private readonly productService: ProductService;

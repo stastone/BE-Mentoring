@@ -1,11 +1,11 @@
 import { Router } from "express";
-import ProductController from "../controllers/product/product.controller.ts";
-import ProductService from "../services/product.service.ts";
+import ProductController from "../controllers/product/product.controller.js";
+import ProductService from "../services/product.service.js";
 
-import reviewRouter from "./review.routes.ts";
-import dataSource from "../DataSource.ts";
-import type { Product } from "../models/Product.ts";
-import { productPayloadValidator } from "../middlewares/product/productPayloadValidator.ts";
+import reviewRouter from "./review.routes.js";
+import dataSource from "../DataSource.js";
+import type { Product } from "../models/Product.js";
+import { productPayloadValidator } from "../middlewares/product/productPayloadValidator.js";
 
 const productRouter = Router();
 

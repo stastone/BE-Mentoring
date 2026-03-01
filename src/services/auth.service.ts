@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { Repository } from "typeorm";
-import type { User } from "../models/User.ts";
-import { UnauthorizedError, BadRequestError } from "../types/Error.ts";
-import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.ts";
-import type { JwtPayload } from "../middlewares/authenticateJWT.ts";
+import type { User } from "../models/User.js";
+import { UnauthorizedError, BadRequestError } from "../types/Error.js";
+import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.js";
+import type { JwtPayload } from "../middlewares/authenticateJWT.js";
 
 class AuthService {
   private readonly _userRepository: Repository<User>;

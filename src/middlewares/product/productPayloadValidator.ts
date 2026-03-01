@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../../types/Error.ts";
+import { BadRequestError } from "../../types/Error.js";
 
 export const productPayloadValidator = (
   req: Request<
