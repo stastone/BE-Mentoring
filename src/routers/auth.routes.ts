@@ -1,6 +1,6 @@
 import { Router } from "express";
 import dataSource from "../DataSource.ts";
-import { AuthController } from "../controllers/auth.controller.ts";
+import { AuthController } from "../controllers/auth/auth.controller.ts";
 import type { User } from "../models/User.ts";
 import { AuthService } from "../services/auth.service.ts";
 

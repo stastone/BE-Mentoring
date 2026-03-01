@@ -1,5 +1,5 @@
 import { Router } from "express";
-import UserController from "../controllers/user.controller.ts";
+import UserController from "../controllers/user/user.controller.ts";
 import dataSource from "../DataSource.ts";
 import UserService from "../services/user.service.ts";
 import type { User } from "../models/User.ts";

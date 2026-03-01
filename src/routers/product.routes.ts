@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductController from "../controllers/product.controller.ts";
+import ProductController from "../controllers/product/product.controller.ts";
 import ProductService from "../services/product.service.ts";
 
 import reviewRouter from "./review.routes.ts";
