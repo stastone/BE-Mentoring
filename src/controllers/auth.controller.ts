@@ -1,7 +1,7 @@
 import type { RequestHandler, Response } from "express";
 import { BadRequestError, UnauthorizedError } from "../types/Error.ts";
 import type { AuthService } from "../services/auth.service.ts";
-import { BaseController } from "../utils/BaseController.ts";
+import { BaseController } from "./base.controller.ts";
 import { catchAsync } from "../utils/catchAsync.ts";
 
 export class AuthController extends BaseController {

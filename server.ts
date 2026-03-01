@@ -1,8 +1,8 @@
 import express from "express";
-import userRouter from "./src/routers/user_router.ts";
+import userRouter from "./src/routers/user.routes.ts";
 import { errorHandler } from "./src/middlewares/errorHandler.ts";
-import productRouter from "./src/routers/product_router.ts";
-import authRouter from "./src/routers/auth_router.ts";
+import productRouter from "./src/routers/product.routes.ts";
+import authRouter from "./src/routers/auth.routes.ts";
 
 import { authenticateJWT } from "./src/middlewares/authenticateJWT.ts";
 

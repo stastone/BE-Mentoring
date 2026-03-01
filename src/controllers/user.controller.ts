@@ -1,10 +1,7 @@
 import { type RequestHandler } from "express";
 import type { User } from "../models/User.ts";
 import type UserService from "../services/user.service.ts";
-import {
-  BaseController,
-  type ResponsePayload,
-} from "../utils/BaseController.ts";
+import { BaseController, type ResponsePayload } from "./base.controller.ts";
 import { catchAsync } from "../utils/catchAsync.ts";
 
 export default class UserController extends BaseController {

@@ -1,10 +1,7 @@
 import { type RequestHandler } from "express";
 import type { Product } from "../models/Product.ts";
 import type ProductService from "../services/product.service.ts";
-import {
-  BaseController,
-  type ResponsePayload,
-} from "../utils/BaseController.ts";
+import { BaseController, type ResponsePayload } from "./base.controller.ts";
 import { catchAsync } from "../utils/catchAsync.ts";
 
 export default class ProductController extends BaseController {

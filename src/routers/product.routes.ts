@@ -1,8 +1,8 @@
 import { Router } from "express";
-import ProductController from "../controllers/product_controller.ts";
+import ProductController from "../controllers/product.controller.ts";
 import ProductService from "../services/product.service.ts";
 
-import reviewRouter from "./review_router.ts";
+import reviewRouter from "./review.routes.ts";
 import dataSource from "../DataSource.ts";
 import type { Product } from "../models/Product.ts";
 import { productPayloadValidator } from "../middlewares/product/productPayloadValidator.ts";
