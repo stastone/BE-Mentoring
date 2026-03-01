@@ -2,7 +2,7 @@ import type { Repository } from "typeorm";
 import type { Product } from "../models/Product.ts";
 import { BadRequestError, NotFoundError } from "../types/Error.ts";
 
-export default class ProductService {
+class ProductService {
   private readonly _productRepository: Repository<Product>;
 
   constructor(productRepository: Repository<Product>) {
@@ -74,3 +74,5 @@ export default class ProductService {
     }
   };
 }
+
+export default ProductService;

@@ -2,7 +2,7 @@ import type { Repository } from "typeorm";
 import type { User } from "../models/User.ts";
 import { BadRequestError, NotFoundError } from "../types/Error.ts";
 
-export default class UserService {
+class UserService {
   private readonly _userRepository: Repository<User>;
   constructor(userRepository: Repository<User>) {
     this._userRepository = userRepository;
@@ -46,3 +46,5 @@ export default class UserService {
     return this._userRepository.save(user);
   };
 }
+
+export default UserService;

@@ -6,7 +6,7 @@ import { UnauthorizedError, BadRequestError } from "../types/Error.ts";
 import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.ts";
 import type { JwtPayload } from "../middlewares/authenticateJWT.ts";
 
-export class AuthService {
+class AuthService {
   private readonly _userRepository: Repository<User>;
   constructor(userRepository: Repository<User>) {
     this._userRepository = userRepository;
@@ -99,3 +99,5 @@ export class AuthService {
     }
   };
 }
+
+export default AuthService;

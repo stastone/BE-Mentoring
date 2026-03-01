@@ -4,7 +4,7 @@ import type UserService from "../../services/user.service.ts";
 import { BaseController, type ResponsePayload } from "../base.controller.ts";
 import { catchAsync } from "../../utils/catchAsync.ts";
 
-export default class UserController extends BaseController {
+class UserController extends BaseController {
   private readonly userService: UserService;
   constructor(userService: UserService) {
     super();
@@ -50,3 +50,5 @@ export default class UserController extends BaseController {
     this.ok(res, updatedUser);
   });
 }
+
+export default UserController;

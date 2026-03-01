@@ -4,7 +4,7 @@ import type ProductService from "../../services/product.service.ts";
 import { BaseController, type ResponsePayload } from "../base.controller.ts";
 import { catchAsync } from "../../utils/catchAsync.ts";
 
-export default class ProductController extends BaseController {
+class ProductController extends BaseController {
   private readonly productService: ProductService;
   constructor(productService: ProductService) {
     super();
@@ -89,3 +89,5 @@ export default class ProductController extends BaseController {
     this.ok(res, null);
   });
 }
+
+export default ProductController;

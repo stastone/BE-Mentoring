@@ -1,10 +1,10 @@
 import type { RequestHandler, Response } from "express";
 import { BadRequestError, UnauthorizedError } from "../../types/Error.ts";
-import type { AuthService } from "../../services/auth.service.ts";
+import type AuthService from "../../services/auth.service.ts";
 import { BaseController } from "../base.controller.ts";
 import { catchAsync } from "../../utils/catchAsync.ts";
 
-export class AuthController extends BaseController {
+class AuthController extends BaseController {
   private readonly _authService: AuthService;
   constructor(authService: AuthService) {
     super();
@@ -87,3 +87,5 @@ export class AuthController extends BaseController {
     },
   );
 }
+
+export default AuthController;
