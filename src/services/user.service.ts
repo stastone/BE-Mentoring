@@ -8,7 +8,7 @@ export default class UserService {
     this._userRepository = userRepository;
   }
 
-  public async getUserById(userId: number) {
+  public getUserById = async (userId: number) => {
     const user = await this._userRepository.findOneBy({ id: userId });
 
     if (!user) {
@@ -16,13 +16,13 @@ export default class UserService {
     }
 
     return user;
-  }
+  };
 
-  public async getUsers(): Promise<User[]> {
+  public getUsers = async () => {
     return this._userRepository.find();
-  }
+  };
 
-  public async updateUser(id: number, name?: string, email?: string) {
+  public updateUser = async (id: number, name?: string, email?: string) => {
     const user = await this._userRepository.findOne({
       where: { id },
     });
@@ -44,5 +44,5 @@ export default class UserService {
     }
 
     return this._userRepository.save(user);
-  }
+  };
 }

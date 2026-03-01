@@ -11,7 +11,7 @@ export default class ProductController extends BaseController {
     this.productService = productService;
   }
 
-  getProductsRequestHandler: RequestHandler<
+  public getProductsRequestHandler: RequestHandler<
     null,
     ResponsePayload<Product[]>,
     null
@@ -21,7 +21,7 @@ export default class ProductController extends BaseController {
     this.ok(res, products);
   });
 
-  getProductByIdRequestHandler: RequestHandler<
+  public getProductByIdRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<Product>,
     null
@@ -34,7 +34,7 @@ export default class ProductController extends BaseController {
     this.ok(res, product);
   });
 
-  createProductRequestHandler: RequestHandler<
+  public createProductRequestHandler: RequestHandler<
     null,
     ResponsePayload<Product>,
     { name: string; price: number; description: string; category: string }
@@ -50,7 +50,7 @@ export default class ProductController extends BaseController {
     this.created(res, newProduct);
   });
 
-  updateProductRequestHandler: RequestHandler<
+  public updateProductRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<Product>,
     {
@@ -77,7 +77,7 @@ export default class ProductController extends BaseController {
     this.ok(res, updatedProduct);
   });
 
-  deleteProductRequestHandler: RequestHandler<
+  public deleteProductRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<null>,
     null

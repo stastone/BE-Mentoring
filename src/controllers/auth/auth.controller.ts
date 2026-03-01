@@ -30,7 +30,7 @@ export class AuthController extends BaseController {
       .json({ success: true });
   }
 
-  register: RequestHandler<
+  public register: RequestHandler<
     null,
     unknown,
     { name: string; email: string; password: string }
@@ -45,37 +45,45 @@ export class AuthController extends BaseController {
     this.created(res, { id: user.id, name: user.name, email: user.email });
   });
 
-  login: RequestHandler<null, unknown, { email: string; password: string }> =
-    catchAsync(async (req, res) => {
-      const { email, password } = req.body;
-      const { accessToken, refreshToken } = await this._authService.login(
-        email,
-        password,
-      );
-      this._sendTokenResponse(accessToken, refreshToken, res);
-    });
+  public login: RequestHandler<
+    null,
+    unknown,
+    { email: string; password: string }
+  > = catchAsync(async (req, res) => {
+    const { email, password } = req.body;
+    const { accessToken, refreshToken } = await this._authService.login(
+      email,
+      password,
+    );
 
-  refresh: RequestHandler<null, unknown> = catchAsync(async (req, res) => {
-    const { refreshToken } = req.cookies;
-
-    if (!refreshToken) {
-      throw new UnauthorizedError("Missing refresh token");
-    }
-
-    const { accessToken, refreshToken: newRefreshToken } =
-      await this._authService.rotateRefreshToken(refreshToken);
-    this._sendTokenResponse(accessToken, newRefreshToken, res);
+    this._sendTokenResponse(accessToken, refreshToken, res);
   });
 
-  logout: RequestHandler<null, unknown> = catchAsync(async (req, res) => {
-    const { refreshToken } = req.cookies;
-    if (refreshToken) {
-      await this._authService.logout(refreshToken);
-    }
+  public refresh: RequestHandler<null, unknown> = catchAsync(
+    async (req, res) => {
+      const { refreshToken } = req.cookies;
 
-    res
-      .clearCookie("accessToken")
-      .clearCookie("refreshToken")
-      .json({ success: true, message: "Logged out" });
-  });
+      if (!refreshToken) {
+        throw new UnauthorizedError("Missing refresh token");
+      }
+
+      const { accessToken, refreshToken: newRefreshToken } =
+        await this._authService.rotateRefreshToken(refreshToken);
+      this._sendTokenResponse(accessToken, newRefreshToken, res);
+    },
+  );
+
+  public logout: RequestHandler<null, unknown> = catchAsync(
+    async (req, res) => {
+      const { refreshToken } = req.cookies;
+      if (refreshToken) {
+        await this._authService.logout(refreshToken);
+      }
+
+      res
+        .clearCookie("accessToken")
+        .clearCookie("refreshToken")
+        .json({ success: true, message: "Logged out" });
+    },
+  );
 }

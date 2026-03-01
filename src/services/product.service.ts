@@ -9,11 +9,11 @@ export default class ProductService {
     this._productRepository = productRepository;
   }
 
-  async getProducts() {
+  public getProducts = async () => {
     return this._productRepository.find();
-  }
+  };
 
-  async getProductById(productId: number) {
+  public getProductById = async (productId: number) => {
     const product = await this._productRepository.findOneBy({ id: productId });
 
     if (!product) {
@@ -21,14 +21,14 @@ export default class ProductService {
     }
 
     return product;
-  }
+  };
 
-  async createProduct(
+  public createProduct = async (
     name: string,
     price: number,
     description: string,
     category: string,
-  ) {
+  ) => {
     if (price <= 0) {
       throw new BadRequestError("Invalid price");
     }
@@ -41,15 +41,15 @@ export default class ProductService {
     });
 
     return this._productRepository.save(product);
-  }
+  };
 
-  async updateProduct(
+  public updateProduct = async (
     productId: number,
     name: string,
     price: number,
     category: string,
     description?: string,
-  ) {
+  ) => {
     const product = await this._productRepository.findOne({
       where: { id: productId },
     });
@@ -64,13 +64,13 @@ export default class ProductService {
     product.category = category;
 
     return this._productRepository.save(product);
-  }
+  };
 
-  async deleteProduct(productId: number) {
+  public deleteProduct = async (productId: number) => {
     const result = await this._productRepository.delete(productId);
 
     if (!result.affected) {
       throw new NotFoundError("Product not found");
     }
-  }
+  };
 }
