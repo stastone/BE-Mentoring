@@ -5,7 +5,11 @@ import ProductService from "../services/product.service.js";
 import reviewRouter from "./review.routes.js";
 import dataSource from "../DataSource.js";
 import type { Product } from "../models/Product.model.js";
-import { productPayloadValidator } from "../middlewares/product/productPayloadValidator.js";
+import { validate } from "../middlewares/validateSchema.js";
+import {
+  CreateProductSchema,
+  UpdateProductSchema,
+} from "../schemas/Product.schema.js";
 
 const productRouter = Router();
 
@@ -16,13 +20,19 @@ const productController = new ProductController(productService);
 productRouter
   .route("/:productId")
   .get(productController.getProductByIdRequestHandler)
-  .put(productPayloadValidator, productController.updateProductRequestHandler)
+  .patch(
+    validate(UpdateProductSchema),
+    productController.updateProductRequestHandler,
+  )
   .delete(productController.deleteProductRequestHandler);
 
 productRouter
   .route("/")
   .get(productController.getProductsRequestHandler)
-  .post(productPayloadValidator, productController.createProductRequestHandler);
+  .post(
+    validate(CreateProductSchema),
+    productController.createProductRequestHandler,
+  );
 
 productRouter.use("/:productId/reviews", reviewRouter);
 

@@ -1,6 +1,7 @@
 import type { Repository } from "typeorm";
 import type { Product } from "../models/Product.model.js";
 import { BadRequestError, NotFoundError } from "../types/Error.js";
+import type { ProductType } from "../schemas/Product.schema.js";
 
 class ProductService {
   private readonly _productRepository: Repository<Product>;
@@ -13,8 +14,8 @@ class ProductService {
     return this._productRepository.find();
   };
 
-  public getProductById = async (productId: number) => {
-    const product = await this._productRepository.findOneBy({ id: productId });
+  public getProductById = async (id: string) => {
+    const product = await this._productRepository.findOneBy({ id });
 
     if (!product) {
       throw new NotFoundError("Product not found");
@@ -23,12 +24,9 @@ class ProductService {
     return product;
   };
 
-  public createProduct = async (
-    name: string,
-    price: number,
-    description: string,
-    category: string,
-  ) => {
+  public createProduct = async (payload: Omit<ProductType, "id">) => {
+    const { name, price, description, category } = payload;
+
     if (price <= 0) {
       throw new BadRequestError("Invalid price");
     }
@@ -44,30 +42,29 @@ class ProductService {
   };
 
   public updateProduct = async (
-    productId: number,
-    name: string,
-    price: number,
-    category: string,
-    description?: string,
+    id: string,
+    payload: Partial<Omit<ProductType, "id">>,
   ) => {
     const product = await this._productRepository.findOne({
-      where: { id: productId },
+      where: { id },
     });
 
     if (!product) {
       throw new NotFoundError("Product not found");
     }
 
-    product.name = name;
-    product.price = price;
-    product.description = description;
-    product.category = category;
+    const { name, price, description, category } = payload;
+
+    product.name = name ?? product.name;
+    product.price = price ?? product.price;
+    product.description = description ?? product.description;
+    product.category = category ?? product.category;
 
     return this._productRepository.save(product);
   };
 
-  public deleteProduct = async (productId: number) => {
-    const result = await this._productRepository.delete(productId);
+  public deleteProduct = async (id: string) => {
+    const result = await this._productRepository.delete(id);
 
     if (!result.affected) {
       throw new NotFoundError("Product not found");

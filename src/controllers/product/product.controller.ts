@@ -3,6 +3,7 @@ import type { Product } from "../../models/Product.model.js";
 import type ProductService from "../../services/product.service.js";
 import { BaseController, type ResponsePayload } from "../base.controller.js";
 import { catchAsync } from "../../utils/catchAsync.js";
+import type { ProductType } from "../../schemas/Product.schema.js";
 
 class ProductController extends BaseController {
   private readonly productService: ProductService;
@@ -27,25 +28,23 @@ class ProductController extends BaseController {
     null
   > = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const product = await this.productService.getProductById(
-      parseInt(productId, 10),
-    );
+    const product = await this.productService.getProductById(productId);
 
     this.ok(res, product);
   });
 
   public createProductRequestHandler: RequestHandler<
-    null,
+    never,
     ResponsePayload<Product>,
-    { name: string; price: number; description: string; category: string }
+    Omit<ProductType, "id">
   > = catchAsync(async (req, res) => {
     const { name, price, description, category } = req.body;
-    const newProduct = await this.productService.createProduct(
+    const newProduct = await this.productService.createProduct({
       name,
       price,
       description,
       category,
-    );
+    });
 
     this.created(res, newProduct);
   });
@@ -53,25 +52,26 @@ class ProductController extends BaseController {
   public updateProductRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<Product>,
-    {
-      newName?: string;
-      newPrice?: number;
-      newDescription?: string;
-      newCategory?: string;
-    }
+    Partial<Omit<ProductType, "id">>
   > = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const { newName, newPrice, newDescription, newCategory } = req.body;
-    const productToUpdate = await this.productService.getProductById(
-      parseInt(productId, 10),
-    );
+    const {
+      name: newName,
+      price: newPrice,
+      description: newDescription,
+      category: newCategory,
+    } = req.body;
+
+    const productToUpdate = await this.productService.getProductById(productId);
 
     const updatedProduct = await this.productService.updateProduct(
       productToUpdate.id,
-      newName ?? productToUpdate.name,
-      newPrice ?? productToUpdate.price,
-      newCategory ?? productToUpdate.category,
-      newDescription ?? productToUpdate.description,
+      {
+        name: newName ?? productToUpdate.name,
+        price: newPrice ?? productToUpdate.price,
+        category: newCategory ?? productToUpdate.category,
+        description: newDescription ?? productToUpdate.description,
+      },
     );
 
     this.ok(res, updatedProduct);
@@ -84,7 +84,7 @@ class ProductController extends BaseController {
   > = catchAsync(async (req, res) => {
     const { productId } = req.params;
 
-    await this.productService.deleteProduct(parseInt(productId, 10));
+    await this.productService.deleteProduct(productId);
 
     this.ok(res, null);
   });

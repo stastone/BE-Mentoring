@@ -1,7 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import type { ProductType } from "../schemas/Product.schema.js";
 
 @Entity()
-export class Product {
+export class Product implements ProductType {
   @PrimaryGeneratedColumn("uuid")
   public readonly id: string;
 
@@ -12,7 +13,7 @@ export class Product {
   public price: number;
 
   @Column({ nullable: true })
-  public description?: string;
+  public description?: string | null;
 
   @Column()
   public category: string;
@@ -22,7 +23,7 @@ export class Product {
     name: string,
     price: number,
     category: string,
-    description?: string,
+    description?: string | null,
   ) {
     this.id = id;
     this.name = name;
