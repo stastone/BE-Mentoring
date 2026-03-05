@@ -1,4 +1,5 @@
-import type { RequestHandler, Request } from "express";
+import type { RequestHandler } from "express";
+import type { Request } from "../types/Request.js";
 import { UnauthorizedError } from "../types/Error.js";
 import jwt from "jsonwebtoken";
 
