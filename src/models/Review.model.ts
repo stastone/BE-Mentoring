@@ -1,9 +1,16 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Product } from "./Product.model.js";
 import { User } from "./User.model.js";
+import type { ReviewType } from "../schemas/Review.schema.js";
 
 @Entity()
-export class Review {
+export class Review implements ReviewType {
   @PrimaryGeneratedColumn("uuid")
   public readonly id: string;
 
@@ -14,22 +21,30 @@ export class Review {
   public rating: number;
 
   @ManyToOne(() => Product)
-  public productId: number;
+  @JoinColumn({ name: "productId" })
+  product!: Product;
+
+  @Column()
+  productId!: string;
 
   @ManyToOne(() => User)
-  public userId: number;
+  @JoinColumn({ name: "userId" })
+  user!: User;
+
+  @Column()
+  userId!: string;
 
   constructor(
     id: string,
     content: string,
     rating: number,
-    productId: number,
-    userId: number,
+    product: Product,
+    user: User,
   ) {
     this.id = id;
     this.content = content;
     this.rating = rating;
-    this.productId = productId;
-    this.userId = userId;
+    this.product = product;
+    this.user = user;
   }
 }
