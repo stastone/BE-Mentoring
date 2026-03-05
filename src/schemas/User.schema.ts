@@ -19,4 +19,9 @@ export const LoginUserSchema = UserSchema.pick({
   password: true,
 });
 
+export const UpdateUserSchema = UserSchema.partial().omit({
+  id: true,
+  refreshToken: true,
+});
+
 export type UserType = z.infer<typeof UserSchema>;

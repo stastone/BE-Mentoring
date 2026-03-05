@@ -8,7 +8,7 @@ class UserService {
     this._userRepository = userRepository;
   }
 
-  public getUserById = async (userId: number) => {
+  public getUserById = async (userId: string) => {
     const user = await this._userRepository.findOneBy({ id: userId });
 
     if (!user) {
@@ -22,17 +22,13 @@ class UserService {
     return this._userRepository.find();
   };
 
-  public updateUser = async (id: number, name?: string, email?: string) => {
+  public updateUser = async (id: string, name?: string, email?: string) => {
     const user = await this._userRepository.findOne({
       where: { id },
     });
 
     if (!user) {
       throw new NotFoundError("User not found");
-    }
-
-    if (name === "" || email === "") {
-      throw new BadRequestError("Name or email cannot be empty");
     }
 
     if (name !== undefined) {

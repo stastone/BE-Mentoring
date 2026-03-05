@@ -24,7 +24,7 @@ class UserController extends BaseController {
     null
   > = catchAsync(async (req, res) => {
     const { userId } = req.params;
-    const user = await this.userService.getUserById(parseInt(userId, 10));
+    const user = await this.userService.getUserById(userId);
 
     this.ok(res, user);
   });
@@ -37,9 +37,7 @@ class UserController extends BaseController {
     const { userId } = req.params;
     const { newEmail, newName } = req.body;
 
-    const userToUpdate = await this.userService.getUserById(
-      parseInt(userId, 10),
-    );
+    const userToUpdate = await this.userService.getUserById(userId);
 
     const updatedUser = await this.userService.updateUser(
       userToUpdate.id,

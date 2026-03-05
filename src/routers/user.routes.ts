@@ -4,6 +4,8 @@ import dataSource from "../DataSource.js";
 import UserService from "../services/user.service.js";
 import type { User } from "../models/User.model.js";
 import { restrictTo } from "../middlewares/restrictTo.js";
+import { UpdateUserSchema } from "../schemas/User.schema.js";
+import { validate } from "../middlewares/validateSchema.js";
 
 const userRouter = Router();
 
@@ -14,7 +16,7 @@ const userController = new UserController(userService);
 userRouter
   .route("/:userId")
   .get(userController.getUserByIdRequestHandler)
-  .put(userController.updateUserRequestHandler);
+  .patch(validate(UpdateUserSchema), userController.updateUserRequestHandler);
 
 userRouter
   .route("/")
