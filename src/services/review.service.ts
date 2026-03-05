@@ -1,5 +1,5 @@
 import type { Repository } from "typeorm";
-import type { Review } from "../models/Review.js";
+import type { Review } from "../models/Review.model.js";
 
 class ReviewService {
   private readonly _reviewRepository: Repository<Review>;

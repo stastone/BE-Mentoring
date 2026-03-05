@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 
-import { User } from "./models/User.js";
-import { Product } from "./models/Product.js";
+import { User } from "./models/User.model.js";
+import { Product } from "./models/Product.model.js";
 
 const dataSource = new DataSource({
   type: "sqlite",

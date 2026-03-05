@@ -1,5 +1,5 @@
 import type { Repository } from "typeorm";
-import type { Product } from "../models/Product.js";
+import type { Product } from "../models/Product.model.js";
 import { BadRequestError, NotFoundError } from "../types/Error.js";
 
 class ProductService {

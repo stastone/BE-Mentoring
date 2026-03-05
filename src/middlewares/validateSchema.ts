@@ -1,6 +1,6 @@
 import { ZodType } from "zod";
 import type { Request, Response, NextFunction } from "express";
-import { InternalServerError } from "../types/Error.js";
+import { BadRequestError } from "../types/Error.js";
 
 export const validate =
   <T>(schema: ZodType<T>) =>
@@ -8,9 +8,7 @@ export const validate =
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      throw new InternalServerError(
-        "Validation failed: " + result.error.message,
-      );
+      throw new BadRequestError("Validation failed: " + result.error.message);
     }
 
     req.body = result.data;

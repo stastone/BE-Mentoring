@@ -31,14 +31,11 @@ class AuthController extends BaseController {
   }
 
   public register: RequestHandler<
-    null,
+    never,
     unknown,
     { name: string; email: string; password: string }
   > = catchAsync(async (req, res) => {
     const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      throw new BadRequestError("Name, email, and password are required");
-    }
 
     const user = await this._authService.register(name, email, password);
 
@@ -46,7 +43,7 @@ class AuthController extends BaseController {
   });
 
   public login: RequestHandler<
-    null,
+    never,
     unknown,
     { email: string; password: string }
   > = catchAsync(async (req, res) => {
@@ -59,7 +56,7 @@ class AuthController extends BaseController {
     this._sendTokenResponse(accessToken, refreshToken, res);
   });
 
-  public refresh: RequestHandler<null, unknown> = catchAsync(
+  public refresh: RequestHandler<never, unknown> = catchAsync(
     async (req, res) => {
       const { refreshToken } = req.cookies;
 

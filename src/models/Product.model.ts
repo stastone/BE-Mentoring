@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn()
-  public readonly id: number;
+  @PrimaryGeneratedColumn("uuid")
+  public readonly id: string;
 
   @Column()
   public name: string;
@@ -18,7 +18,7 @@ export class Product {
   public category: string;
 
   constructor(
-    id: number,
+    id: string,
     name: string,
     price: number,
     category: string,

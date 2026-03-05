@@ -4,7 +4,7 @@ import ProductService from "../services/product.service.js";
 
 import reviewRouter from "./review.routes.js";
 import dataSource from "../DataSource.js";
-import type { Product } from "../models/Product.js";
+import type { Product } from "../models/Product.model.js";
 import { productPayloadValidator } from "../middlewares/product/productPayloadValidator.js";
 
 const productRouter = Router();

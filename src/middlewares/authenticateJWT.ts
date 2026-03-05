@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";
 
 export interface JwtPayload {
-  userId: number;
+  userId: string;
   userRole: "user" | "admin";
   iat?: number;
   exp?: number;

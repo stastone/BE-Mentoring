@@ -1,5 +1,5 @@
 import type { Repository } from "typeorm";
-import type { User } from "../models/User.js";
+import type { User } from "../models/User.model.js";
 import { BadRequestError, NotFoundError } from "../types/Error.js";
 
 class UserService {

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { Repository } from "typeorm";
-import type { User } from "../models/User.js";
+import type { User } from "../models/User.model.js";
 import { UnauthorizedError, BadRequestError } from "../types/Error.js";
 import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.js";
 import type { JwtPayload } from "../middlewares/authenticateJWT.js";
@@ -74,7 +74,7 @@ class AuthService {
     const user = await this._userRepository.findOneBy({ id: payload.userId });
 
     if (user && user.refreshToken === refreshToken) {
-      user.refreshToken = undefined;
+      user.refreshToken = null;
       await this._userRepository.save(user);
     }
 

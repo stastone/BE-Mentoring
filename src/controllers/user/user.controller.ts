@@ -1,5 +1,5 @@
 import { type RequestHandler } from "express";
-import type { User } from "../../models/User.js";
+import type { User } from "../../models/User.model.js";
 import type UserService from "../../services/user.service.js";
 import { BaseController, type ResponsePayload } from "../base.controller.js";
 import { catchAsync } from "../../utils/catchAsync.js";

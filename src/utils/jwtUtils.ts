@@ -7,7 +7,7 @@ const ACCESS_TOKEN_EXPIRES_IN = "15m";
 const REFRESH_TOKEN_EXPIRES_IN = "7d";
 
 export function signAccessToken(
-  userId: number,
+  userId: string,
   userRole: "user" | "admin",
 ): string {
   return jwt.sign({ userId, userRole }, ACCESS_TOKEN_SECRET, {
@@ -15,7 +15,7 @@ export function signAccessToken(
   });
 }
 
-export function signRefreshToken(userId: number): string {
+export function signRefreshToken(userId: string): string {
   return jwt.sign({ userId }, REFRESH_TOKEN_SECRET, {
     expiresIn: REFRESH_TOKEN_EXPIRES_IN,
   });
