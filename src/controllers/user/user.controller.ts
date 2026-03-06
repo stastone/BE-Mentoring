@@ -1,13 +1,10 @@
 import { type RequestHandler } from "express";
-import type { User } from "../models/User.ts";
-import type UserService from "../services/user.service.ts";
-import {
-  BaseController,
-  type ResponsePayload,
-} from "../utils/BaseController.ts";
-import { catchAsync } from "../utils/catchAsync.ts";
+import type { User } from "../../models/User.model.js";
+import type UserService from "../../services/user.service.js";
+import { BaseController, type ResponsePayload } from "../base.controller.js";
+import { catchAsync } from "../../utils/catchAsync.js";
 
-export default class UserController extends BaseController {
+class UserController extends BaseController {
   private readonly userService: UserService;
   constructor(userService: UserService) {
     super();
@@ -27,7 +24,7 @@ export default class UserController extends BaseController {
     null
   > = catchAsync(async (req, res) => {
     const { userId } = req.params;
-    const user = await this.userService.getUserById(parseInt(userId, 10));
+    const user = await this.userService.getUserById(userId);
 
     this.ok(res, user);
   });
@@ -40,9 +37,7 @@ export default class UserController extends BaseController {
     const { userId } = req.params;
     const { newEmail, newName } = req.body;
 
-    const userToUpdate = await this.userService.getUserById(
-      parseInt(userId, 10),
-    );
+    const userToUpdate = await this.userService.getUserById(userId);
 
     const updatedUser = await this.userService.updateUser(
       userToUpdate.id,
@@ -53,3 +48,5 @@ export default class UserController extends BaseController {
     this.ok(res, updatedUser);
   });
 }
+
+export default UserController;

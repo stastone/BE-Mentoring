@@ -1,0 +1,93 @@
+import { type RequestHandler } from "express";
+import type { Product } from "../../models/Product.model.js";
+import type ProductService from "../../services/product.service.js";
+import { BaseController, type ResponsePayload } from "../base.controller.js";
+import { catchAsync } from "../../utils/catchAsync.js";
+import type { ProductType } from "../../schemas/Product.schema.js";
+
+class ProductController extends BaseController {
+  private readonly productService: ProductService;
+  constructor(productService: ProductService) {
+    super();
+    this.productService = productService;
+  }
+
+  public getProductsRequestHandler: RequestHandler<
+    null,
+    ResponsePayload<Product[]>,
+    null
+  > = catchAsync(async (_req, res) => {
+    const products = await this.productService.getProducts();
+
+    this.ok(res, products);
+  });
+
+  public getProductByIdRequestHandler: RequestHandler<
+    { productId: string },
+    ResponsePayload<Product>,
+    null
+  > = catchAsync(async (req, res) => {
+    const { productId } = req.params;
+    const product = await this.productService.getProductById(productId);
+
+    this.ok(res, product);
+  });
+
+  public createProductRequestHandler: RequestHandler<
+    never,
+    ResponsePayload<Product>,
+    Omit<ProductType, "id">
+  > = catchAsync(async (req, res) => {
+    const { name, price, description, category } = req.body;
+    const newProduct = await this.productService.createProduct({
+      name,
+      price,
+      description,
+      category,
+    });
+
+    this.created(res, newProduct);
+  });
+
+  public updateProductRequestHandler: RequestHandler<
+    { productId: string },
+    ResponsePayload<Product>,
+    Partial<Omit<ProductType, "id">>
+  > = catchAsync(async (req, res) => {
+    const { productId } = req.params;
+    const {
+      name: newName,
+      price: newPrice,
+      description: newDescription,
+      category: newCategory,
+    } = req.body;
+
+    const productToUpdate = await this.productService.getProductById(productId);
+
+    const updatedProduct = await this.productService.updateProduct(
+      productToUpdate.id,
+      {
+        name: newName ?? productToUpdate.name,
+        price: newPrice ?? productToUpdate.price,
+        category: newCategory ?? productToUpdate.category,
+        description: newDescription ?? productToUpdate.description,
+      },
+    );
+
+    this.ok(res, updatedProduct);
+  });
+
+  public deleteProductRequestHandler: RequestHandler<
+    { productId: string },
+    ResponsePayload<null>,
+    null
+  > = catchAsync(async (req, res) => {
+    const { productId } = req.params;
+
+    await this.productService.deleteProduct(productId);
+
+    this.ok(res, null);
+  });
+}
+
+export default ProductController;

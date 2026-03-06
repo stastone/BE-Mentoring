@@ -1,11 +1,12 @@
-import type { RequestHandler, Request } from "express";
-import { UnauthorizedError } from "../types/Error.ts";
+import type { RequestHandler } from "express";
+import type { Request } from "../types/Request.js";
+import { UnauthorizedError } from "../types/Error.js";
 import jwt from "jsonwebtoken";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";
 
 export interface JwtPayload {
-  userId: number;
+  userId: string;
   userRole: "user" | "admin";
   iat?: number;
   exp?: number;

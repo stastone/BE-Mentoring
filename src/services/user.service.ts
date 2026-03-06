@@ -1,14 +1,14 @@
 import type { Repository } from "typeorm";
-import type { User } from "../models/User.ts";
-import { BadRequestError, NotFoundError } from "../types/Error.ts";
+import type { User } from "../models/User.model.js";
+import { BadRequestError, NotFoundError } from "../types/Error.js";
 
-export default class UserService {
+class UserService {
   private readonly _userRepository: Repository<User>;
   constructor(userRepository: Repository<User>) {
     this._userRepository = userRepository;
   }
 
-  public async getUserById(userId: number) {
+  public getUserById = async (userId: string) => {
     const user = await this._userRepository.findOneBy({ id: userId });
 
     if (!user) {
@@ -16,23 +16,19 @@ export default class UserService {
     }
 
     return user;
-  }
+  };
 
-  public async getUsers(): Promise<User[]> {
+  public getUsers = async () => {
     return this._userRepository.find();
-  }
+  };
 
-  public async updateUser(id: number, name?: string, email?: string) {
+  public updateUser = async (id: string, name?: string, email?: string) => {
     const user = await this._userRepository.findOne({
       where: { id },
     });
 
     if (!user) {
       throw new NotFoundError("User not found");
-    }
-
-    if (name === "" || email === "") {
-      throw new BadRequestError("Name or email cannot be empty");
     }
 
     if (name !== undefined) {
@@ -44,5 +40,7 @@ export default class UserService {
     }
 
     return this._userRepository.save(user);
-  }
+  };
 }
+
+export default UserService;

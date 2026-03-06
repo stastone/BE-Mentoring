@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { NotImplementedError } from "../types/Error.ts";
+import { NotImplementedError } from "../types/Error.js";
 
 const reviewRouter = Router({ mergeParams: true });
 

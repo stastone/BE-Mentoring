@@ -1,0 +1,88 @@
+import type { RequestHandler, Response } from "express";
+import { BadRequestError, UnauthorizedError } from "../../types/Error.js";
+import type AuthService from "../../services/auth.service.js";
+import { BaseController } from "../base.controller.js";
+import { catchAsync } from "../../utils/catchAsync.js";
+
+class AuthController extends BaseController {
+  private readonly _authService: AuthService;
+  constructor(authService: AuthService) {
+    super();
+    this._authService = authService;
+  }
+
+  private _sendTokenResponse(
+    accessToken: string,
+    refreshToken: string,
+    res: Response,
+  ) {
+    res
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+        sameSite: "strict",
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: "strict",
+      })
+      .json({ success: true });
+  }
+
+  public register: RequestHandler<
+    never,
+    unknown,
+    { name: string; email: string; password: string }
+  > = catchAsync(async (req, res) => {
+    const { name, email, password } = req.body;
+
+    const user = await this._authService.register(name, email, password);
+
+    this.created(res, { id: user.id, name: user.name, email: user.email });
+  });
+
+  public login: RequestHandler<
+    never,
+    unknown,
+    { email: string; password: string }
+  > = catchAsync(async (req, res) => {
+    const { email, password } = req.body;
+    const { accessToken, refreshToken } = await this._authService.login(
+      email,
+      password,
+    );
+
+    this._sendTokenResponse(accessToken, refreshToken, res);
+  });
+
+  public refresh: RequestHandler<never, unknown> = catchAsync(
+    async (req, res) => {
+      const { refreshToken } = req.cookies;
+
+      if (!refreshToken) {
+        throw new UnauthorizedError("Missing refresh token");
+      }
+
+      const { accessToken, refreshToken: newRefreshToken } =
+        await this._authService.rotateRefreshToken(refreshToken);
+      this._sendTokenResponse(accessToken, newRefreshToken, res);
+    },
+  );
+
+  public logout: RequestHandler<null, unknown> = catchAsync(
+    async (req, res) => {
+      const { refreshToken } = req.cookies;
+      if (refreshToken) {
+        await this._authService.logout(refreshToken);
+      }
+
+      res
+        .clearCookie("accessToken")
+        .clearCookie("refreshToken")
+        .json({ success: true, message: "Logged out" });
+    },
+  );
+}
+
+export default AuthController;

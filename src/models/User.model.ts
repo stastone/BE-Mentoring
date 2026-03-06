@@ -1,9 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import type { UserType } from "../schemas/User.schema.js";
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  public readonly id: number;
+export class User implements UserType {
+  @PrimaryGeneratedColumn("uuid")
+  public readonly id: string;
 
   @Column()
   public name: string;
@@ -18,10 +19,10 @@ export class User {
   public role: "user" | "admin" = "user";
 
   @Column({ nullable: true })
-  public refreshToken?: string;
+  public refreshToken: string | null = null;
 
   constructor(
-    id: number,
+    id: string,
     name: string,
     email: string,
     password: string,

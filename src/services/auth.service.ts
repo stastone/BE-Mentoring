@@ -1,18 +1,18 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { Repository } from "typeorm";
-import type { User } from "../models/User.ts";
-import { UnauthorizedError, BadRequestError } from "../types/Error.ts";
-import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.ts";
-import type { JwtPayload } from "../middlewares/authenticateJWT.ts";
+import type { User } from "../models/User.model.js";
+import { UnauthorizedError, BadRequestError } from "../types/Error.js";
+import { signAccessToken, signRefreshToken } from "../utils/jwtUtils.js";
+import type { JwtPayload } from "../middlewares/authenticateJWT.js";
 
-export class AuthService {
+class AuthService {
   private readonly _userRepository: Repository<User>;
   constructor(userRepository: Repository<User>) {
     this._userRepository = userRepository;
   }
 
-  async register(name: string, email: string, password: string) {
+  public register = async (name: string, email: string, password: string) => {
     if (!name || !email || !password) {
       throw new BadRequestError("Name, email, and password are required");
     }
@@ -31,9 +31,9 @@ export class AuthService {
     await this._userRepository.save(user);
 
     return user;
-  }
+  };
 
-  async login(email: string, password: string) {
+  public login = async (email: string, password: string) => {
     const user = await this._userRepository.findOneBy({ email });
     if (!user || !user.password) {
       throw new UnauthorizedError("Invalid credentials");
@@ -51,9 +51,9 @@ export class AuthService {
     await this._userRepository.save(user);
 
     return { user, accessToken, refreshToken };
-  }
+  };
 
-  async rotateRefreshToken(refreshToken: string) {
+  public rotateRefreshToken = async (refreshToken: string) => {
     const payload = await this.verifyToken(refreshToken, "refresh");
     const user = await this._userRepository.findOneBy({ id: payload.userId });
     if (!user || user.refreshToken !== refreshToken) {
@@ -67,21 +67,21 @@ export class AuthService {
     await this._userRepository.save(user);
 
     return { user, accessToken: newAccessToken, refreshToken: newRefreshToken };
-  }
+  };
 
-  async logout(refreshToken: string) {
+  public logout = async (refreshToken: string) => {
     const payload = await this.verifyToken(refreshToken, "refresh");
     const user = await this._userRepository.findOneBy({ id: payload.userId });
 
     if (user && user.refreshToken === refreshToken) {
-      user.refreshToken = undefined;
+      user.refreshToken = null;
       await this._userRepository.save(user);
     }
 
     return true;
-  }
+  };
 
-  private async verifyToken(token: string, type: "access" | "refresh") {
+  private verifyToken = async (token: string, type: "access" | "refresh") => {
     try {
       if (type === "access") {
         return jwt.verify(
@@ -97,5 +97,7 @@ export class AuthService {
     } catch {
       throw new UnauthorizedError("Invalid or expired token");
     }
-  }
+  };
 }
+
+export default AuthService;
