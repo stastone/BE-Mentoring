@@ -3,7 +3,7 @@ import { Category } from "../models/Category.model.js";
 import { NotFoundError } from "../types/Error.js";
 import type { CategoryType } from "../schemas/Category.schema.js";
 
-export class CategoryService {
+class CategoryService {
   private readonly _categoryRepository: Repository<Category>;
 
   constructor(categoryRepository: Repository<Category>) {
@@ -109,3 +109,5 @@ export class CategoryService {
     await this._categoryRepository.remove(category);
   };
 }
+
+export default CategoryService;
