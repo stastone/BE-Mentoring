@@ -5,6 +5,7 @@ import { errorHandler } from "./src/middlewares/errorHandler.js";
 import productRouter from "./src/routers/product.routes.js";
 import authRouter from "./src/routers/auth.routes.js";
 import dataSource from "./src/DataSource.js";
+import categoryRouter from "./src/routers/category.routes.js";
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 
 app.use("/products", productRouter);
+
+app.use("/categories", categoryRouter);
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
