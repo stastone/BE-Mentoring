@@ -10,7 +10,7 @@ export class CategoryService {
     this._categoryRepository = categoryRepository;
   }
 
-  public async createCategory(payload: Omit<CategoryType, "id">) {
+  public createCategory = async (payload: Omit<CategoryType, "id">) => {
     let parent: Category | null = null;
 
     if (payload.parentCategoryId) {
@@ -30,15 +30,15 @@ export class CategoryService {
     });
 
     return this._categoryRepository.save(category);
-  }
+  };
 
-  public async getCategories() {
+  public getCategories = async () => {
     return this._categoryRepository.find({
       relations: ["parent"],
     });
-  }
+  };
 
-  public async getCategoryById(id: string) {
+  public getCategoryById = async (id: string) => {
     const category = await this._categoryRepository.findOne({
       where: { id },
       relations: ["parent"],
@@ -49,12 +49,12 @@ export class CategoryService {
     }
 
     return category;
-  }
+  };
 
-  public async updateCategory(
+  public updateCategory = async (
     id: string,
     payload: Partial<Omit<CategoryType, "id">>,
-  ) {
+  ) => {
     const category = await this._categoryRepository.findOneBy({ id });
 
     if (!category) {
@@ -77,9 +77,9 @@ export class CategoryService {
     category.name = payload.name ?? category.name;
 
     return this._categoryRepository.save(category);
-  }
+  };
 
-  public async deleteCategory(id: string) {
+  public deleteCategory = async (id: string) => {
     const category = await this._categoryRepository.findOneBy({ id });
 
     if (!category) {
@@ -89,5 +89,23 @@ export class CategoryService {
     await this._categoryRepository.remove(category);
 
     return { success: true };
-  }
+  };
+
+  private deleteCategoryRecursively = async (id: string) => {
+    const category = await this._categoryRepository.findOneBy({ id });
+
+    if (!category) {
+      throw new NotFoundError("Category not found");
+    }
+
+    const children = await this._categoryRepository.find({
+      where: { parentCategoryId: id },
+    });
+
+    for (const child of children) {
+      await this.deleteCategoryRecursively(child.id);
+    }
+
+    await this._categoryRepository.remove(category);
+  };
 }
