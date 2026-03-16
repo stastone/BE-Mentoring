@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import type { ProductType } from "../schemas/Product.schema.js";
+import { Category } from "./Category.model.js";
 
 @Entity()
 export class Product implements ProductType {
@@ -15,21 +22,23 @@ export class Product implements ProductType {
   @Column({ nullable: true })
   public description?: string | null;
 
+  @ManyToOne(() => Category, { nullable: false })
+  @JoinColumn({ name: "categoryId" })
+  public category!: Category;
+
   @Column()
-  public category: string;
+  public categoryId!: string;
 
   constructor(
     id: string,
     name: string,
     price: number,
-    category: string,
     description?: string | null,
   ) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.description = description;
-    this.category = category;
   }
 
   public getProductInfo(): string {
