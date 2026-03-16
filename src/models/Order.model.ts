@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User.model.js";
+import OrderItem from "./OrderItem.model.js";
 
 @Entity()
 class Order {
@@ -21,6 +23,9 @@ class Order {
 
   @Column()
   public userId!: string;
+
+  @OneToMany(() => OrderItem, (item) => item.order)
+  public items!: OrderItem[];
 }
 
 export default Order;
