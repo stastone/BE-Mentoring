@@ -8,9 +8,10 @@ import {
 } from "typeorm";
 import { User } from "./User.model.js";
 import OrderItem from "./OrderItem.model.js";
+import type { OrderType } from "../schemas/Order.schema.js";
 
 @Entity()
-class Order {
+class Order implements OrderType {
   @PrimaryGeneratedColumn("uuid")
   public readonly id!: string;
 

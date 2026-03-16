@@ -2,7 +2,11 @@ import type { DataSource, Repository } from "typeorm";
 import Order from "../models/Order.model.js";
 import OrderItem from "../models/OrderItem.model.js";
 import type { Product } from "../models/Product.model.js";
-import { BadRequestError, NotFoundError } from "../types/Error.js";
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+} from "../types/Error.js";
 
 interface CreateOrderItemPayload {
   productId: string;
@@ -11,16 +15,19 @@ interface CreateOrderItemPayload {
 
 class OrderService {
   private readonly _orderRepository: Repository<Order>;
+  private readonly _orderItemRepository: Repository<OrderItem>;
   private readonly _productRepository: Repository<Product>;
   private readonly _dataSource: DataSource;
 
   constructor(
     orderRepository: Repository<Order>,
     productRepository: Repository<Product>,
+    orderItemRepository: Repository<OrderItem>,
     dataSource: DataSource,
   ) {
     this._orderRepository = orderRepository;
     this._productRepository = productRepository;
+    this._orderItemRepository = orderItemRepository;
     this._dataSource = dataSource;
   }
 
@@ -47,8 +54,8 @@ class OrderService {
   public createOrder = async (
     userId: string,
     items: CreateOrderItemPayload[],
-  ) =>
-    this._dataSource.transaction(async (manager) => {
+  ) => {
+    const order = await this._dataSource.transaction(async (manager) => {
       const order = manager.create(Order, { userId });
       const savedOrder = await manager.save(order);
 
@@ -83,12 +90,19 @@ class OrderService {
       });
     });
 
+    if (!order) {
+      throw new InternalServerError("Failed to create order");
+    }
+
+    return order;
+  };
+
   public updateOrderItem = async (
     orderId: string,
     productId: string,
     quantity: number,
   ) => {
-    const orderItem = await this._dataSource.getRepository(OrderItem).findOne({
+    const orderItem = await this._orderItemRepository.findOne({
       where: { orderId, productId },
       relations: ["order"],
     });
@@ -97,16 +111,21 @@ class OrderService {
       throw new NotFoundError("Order item not found");
     }
 
-    if (orderItem.order.status === "cancelled") {
-      throw new BadRequestError("Cannot update a cancelled order");
-    }
-
-    if (quantity <= 0) {
-      throw new BadRequestError("Quantity must be greater than zero");
-    }
-
     orderItem.quantity = quantity;
-    return this._dataSource.getRepository(OrderItem).save(orderItem);
+    return this._orderItemRepository.save(orderItem);
+  };
+
+  public deleteOrderItem = async (orderId: string, productId: string) => {
+    const orderItem = await this._orderItemRepository.findOne({
+      where: { orderId, productId },
+      relations: ["order"],
+    });
+
+    if (!orderItem) {
+      throw new NotFoundError("Order item not found");
+    }
+
+    return this._orderItemRepository.remove(orderItem);
   };
 
   public updateOrderStatus = async (
@@ -126,10 +145,6 @@ class OrderService {
     order.status = status;
 
     return this._orderRepository.save(order);
-  };
-
-  public cancelOrder = async (id: string) => {
-    return this.updateOrderStatus(id, "cancelled");
   };
 }
 
