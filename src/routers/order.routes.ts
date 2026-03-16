@@ -3,8 +3,8 @@ import OrderService from "../services/order.service.js";
 import dataSource from "../DataSource.js";
 import OrderController from "../controllers/order/order.controller.js";
 import type { Product } from "../models/Product.model.js";
-import type Order from "../models/Order.model.js";
-import type OrderItem from "../models/OrderItem.model.js";
+import type { Order } from "../models/Order.model.js";
+import type { OrderItem } from "../models/OrderItem.model.js";
 import { validate } from "../middlewares/validateSchema.js";
 import {
   CreateOrderSchema,

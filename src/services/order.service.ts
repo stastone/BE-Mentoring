@@ -1,6 +1,6 @@
 import type { DataSource, Repository } from "typeorm";
-import Order from "../models/Order.model.js";
-import OrderItem from "../models/OrderItem.model.js";
+import { Order } from "../models/Order.model.js";
+import { OrderItem } from "../models/OrderItem.model.js";
 import type { Product } from "../models/Product.model.js";
 import {
   BadRequestError,

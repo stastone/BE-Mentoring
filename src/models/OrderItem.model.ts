@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Product } from "./Product.model.js";
-import Order from "./Order.model.js";
+import { Order } from "./Order.model.js";
 
 @Entity()
-class OrderItem {
+export class OrderItem {
   @PrimaryGeneratedColumn("uuid")
   public readonly id!: string;
 
@@ -33,5 +33,3 @@ class OrderItem {
   @Column()
   public orderId!: string;
 }
-
-export default OrderItem;

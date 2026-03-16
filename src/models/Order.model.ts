@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User.model.js";
-import OrderItem from "./OrderItem.model.js";
+import { OrderItem } from "./OrderItem.model.js";
 import type { OrderType } from "../schemas/Order.schema.js";
 
 @Entity()
-class Order implements OrderType {
+export class Order implements OrderType {
   @PrimaryGeneratedColumn("uuid")
   public readonly id!: string;
 
@@ -28,5 +28,3 @@ class Order implements OrderType {
   @OneToMany(() => OrderItem, (item) => item.order)
   public items!: OrderItem[];
 }
-
-export default Order;
