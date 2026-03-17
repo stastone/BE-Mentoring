@@ -4,6 +4,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
 import { Product } from "./Product.model.js";
 import { Order } from "./Order.model.js";
@@ -21,14 +22,14 @@ export class OrderItem {
 
   @ManyToOne(() => Product, { nullable: false })
   @JoinColumn({ name: "productId" })
-  public product!: Product;
+  public product!: Relation<Product>;
 
   @Column()
   public productId!: string;
 
   @ManyToOne(() => Order, { nullable: false })
   @JoinColumn({ name: "orderId" })
-  public order!: Order;
+  public order!: Relation<Order>;
 
   @Column()
   public orderId!: string;

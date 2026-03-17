@@ -16,7 +16,7 @@ export class Category implements CategoryType {
   @Column()
   public name!: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   public parentCategoryId!: string | null;
 
   @ManyToOne(() => Category, (category) => category.children, {

@@ -38,12 +38,12 @@ class ProductController extends BaseController {
     ResponsePayload<Product>,
     Omit<ProductType, "id">
   > = catchAsync(async (req, res) => {
-    const { name, price, description, category } = req.body;
+    const { name, price, description, categoryId } = req.body;
     const newProduct = await this.productService.createProduct({
       name,
       price,
       description,
-      category,
+      categoryId,
     });
 
     this.created(res, newProduct);
@@ -59,7 +59,7 @@ class ProductController extends BaseController {
       name: newName,
       price: newPrice,
       description: newDescription,
-      category: newCategory,
+      categoryId: newCategoryId,
     } = req.body;
 
     const productToUpdate = await this.productService.getProductById(productId);
@@ -69,7 +69,7 @@ class ProductController extends BaseController {
       {
         name: newName ?? productToUpdate.name,
         price: newPrice ?? productToUpdate.price,
-        category: newCategory ?? productToUpdate.category,
+        categoryId: newCategoryId ?? productToUpdate.categoryId,
         description: newDescription ?? productToUpdate.description,
       },
     );

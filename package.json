@@ -3,7 +3,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w & node --watch dist/server.js"
+    "dev": "tsc -w & node --watch dist/server.js",
+    "seed": "node --loader ts-node/esm src/database/seed.ts"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

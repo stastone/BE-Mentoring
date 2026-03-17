@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "./User.model.js";
 import { OrderItem } from "./OrderItem.model.js";
@@ -26,5 +27,5 @@ export class Order implements OrderType {
   public userId!: string;
 
   @OneToMany(() => OrderItem, (item) => item.order)
-  public items!: OrderItem[];
+  public items!: Relation<OrderItem[]>;
 }

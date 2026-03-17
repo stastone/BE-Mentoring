@@ -18,7 +18,7 @@ export class User implements UserType {
   @Column()
   public role: "user" | "admin" = "user";
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   public refreshToken: string | null = null;
 
   constructor(

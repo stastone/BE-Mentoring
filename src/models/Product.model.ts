@@ -5,11 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import type { ProductType } from "../schemas/Product.schema.js";
 import { Category } from "./Category.model.js";
 
 @Entity()
-export class Product implements ProductType {
+export class Product {
   @PrimaryGeneratedColumn("uuid")
   public readonly id: string;
 
@@ -19,7 +18,7 @@ export class Product implements ProductType {
   @Column()
   public price: number;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   public description?: string | null;
 
   @ManyToOne(() => Category, { nullable: false })
