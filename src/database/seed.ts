@@ -20,12 +20,12 @@ async function seed() {
   await queryRunner.startTransaction();
 
   try {
-    await queryRunner.manager.delete(Review, {});
-    await queryRunner.manager.delete(OrderItem, {});
-    await queryRunner.manager.delete(Order, {});
-    await queryRunner.manager.delete(Product, {});
-    await queryRunner.manager.delete(Category, {});
-    await queryRunner.manager.delete(User, {});
+    await queryRunner.manager.clear(Review);
+    await queryRunner.manager.clear(OrderItem);
+    await queryRunner.manager.clear(Order);
+    await queryRunner.manager.clear(Product);
+    await queryRunner.manager.clear(Category);
+    await queryRunner.manager.clear(User);
 
     const categories = await seedCategories(queryRunner.manager);
     const users = await seedUsers(queryRunner.manager);
@@ -36,6 +36,7 @@ async function seed() {
 
     await queryRunner.commitTransaction();
   } catch (err) {
+    console.error("Seed failed: ", err);
     await queryRunner.rollbackTransaction();
     process.exit(1);
   } finally {

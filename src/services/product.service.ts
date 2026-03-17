@@ -25,7 +25,7 @@ class ProductService {
   };
 
   public createProduct = async (payload: Omit<ProductType, "id">) => {
-    const { name, price, description, category } = payload;
+    const { name, price, description, categoryId } = payload;
 
     if (price <= 0) {
       throw new BadRequestError("Invalid price");
@@ -35,7 +35,7 @@ class ProductService {
       name,
       price,
       description,
-      category,
+      categoryId,
     });
 
     return this._productRepository.save(product);
@@ -53,12 +53,12 @@ class ProductService {
       throw new NotFoundError("Product not found");
     }
 
-    const { name, price, description, category } = payload;
+    const { name, price, description, categoryId } = payload;
 
     product.name = name ?? product.name;
     product.price = price ?? product.price;
     product.description = description ?? product.description;
-    product.category = category ?? product.category;
+    product.categoryId = categoryId ?? product.categoryId;
 
     return this._productRepository.save(product);
   };

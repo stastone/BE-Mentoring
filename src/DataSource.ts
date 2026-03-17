@@ -11,7 +11,7 @@ const dataSource = new DataSource({
   type: "sqlite",
   database: "backend_mentoring.db",
   entities: [User, Product, Review, Category, Order, OrderItem],
-  dropSchema: process.env.ENVIRONMENT === "development",
+  synchronize: true,
 });
 
 export default dataSource;
