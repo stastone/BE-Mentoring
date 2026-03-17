@@ -12,13 +12,13 @@ import type { ReviewType } from "../schemas/Review.schema.js";
 @Entity()
 export class Review implements ReviewType {
   @PrimaryGeneratedColumn("uuid")
-  public readonly id: string;
+  public readonly id!: string;
 
   @Column()
-  public content: string;
+  public content!: string;
 
   @Column()
-  public rating: number;
+  public rating!: number;
 
   @ManyToOne(() => Product)
   @JoinColumn({ name: "productId" })
@@ -33,18 +33,4 @@ export class Review implements ReviewType {
 
   @Column()
   userId!: string;
-
-  constructor(
-    id: string,
-    content: string,
-    rating: number,
-    product: Product,
-    user: User,
-  ) {
-    this.id = id;
-    this.content = content;
-    this.rating = rating;
-    this.product = product;
-    this.user = user;
-  }
 }

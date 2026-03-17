@@ -5,7 +5,7 @@ export const ProductSchema = z.object({
   name: z.string().min(1),
   price: z.number().positive(),
   description: z.string().optional().nullable(),
-  category: z.string().min(1),
+  categoryId: z.string().min(1),
 });
 
 export const CreateProductSchema = ProductSchema.omit({ id: true });

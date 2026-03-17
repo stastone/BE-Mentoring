@@ -1,38 +1,30 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import type { ProductType } from "../schemas/Product.schema.js";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Category } from "./Category.model.js";
 
 @Entity()
-export class Product implements ProductType {
+export class Product {
   @PrimaryGeneratedColumn("uuid")
-  public readonly id: string;
+  public readonly id!: string;
 
   @Column()
-  public name: string;
+  public name!: string;
 
   @Column()
-  public price: number;
+  public price!: number;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true })
   public description?: string | null;
 
+  @ManyToOne(() => Category, { nullable: false })
+  @JoinColumn({ name: "categoryId" })
+  public category!: Category;
+
   @Column()
-  public category: string;
-
-  constructor(
-    id: string,
-    name: string,
-    price: number,
-    category: string,
-    description?: string | null,
-  ) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.description = description;
-    this.category = category;
-  }
-
-  public getProductInfo(): string {
-    return `Product ID: ${this.id}, Name: ${this.name}, Price: ${this.price}, Description: ${this.description}, Category: ${this.category}`;
-  }
+  public categoryId!: string;
 }
