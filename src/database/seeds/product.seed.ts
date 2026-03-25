@@ -5,7 +5,7 @@ import type { seedCategories } from "./category.seed.js";
 
 type Categories = Awaited<ReturnType<typeof seedCategories>>;
 
-const PRODUCTS_PER_CATEGORY = 5;
+const PRODUCTS = 5;
 
 export async function seedProducts(
   manager: EntityManager,
@@ -20,7 +20,7 @@ export async function seedProducts(
   const products: Product[] = [];
 
   for (const category of leafCategories) {
-    for (let i = 0; i < PRODUCTS_PER_CATEGORY; i++) {
+    for (let i = 0; i < PRODUCTS; i++) {
       const product = manager.create(Product, {
         name: faker.commerce.productName(),
         price: Number(faker.commerce.price({ min: 10, max: 2000 })),
