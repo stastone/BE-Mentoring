@@ -1,59 +1,37 @@
+import { faker } from "@faker-js/faker";
 import type { EntityManager } from "typeorm";
 import { Product } from "../../models/Product.model.js";
 import type { seedCategories } from "./category.seed.js";
 
 type Categories = Awaited<ReturnType<typeof seedCategories>>;
 
+const PRODUCTS_PER_CATEGORY = 5;
+
 export async function seedProducts(
   manager: EntityManager,
   categories: Categories,
 ) {
-  const { phones, laptops, tshirts } = categories;
+  const leafCategories = [
+    categories.phones,
+    categories.laptops,
+    categories.tshirts,
+  ];
 
-  const iphone = manager.create(Product, {
-    name: "iPhone 15",
-    price: 999,
-    description: "Latest Apple smartphone with A17 chip.",
-    categoryId: phones.id,
-    category: phones,
-  });
-  await manager.save(Product, iphone);
+  const products: Product[] = [];
 
-  const samsung = manager.create(Product, {
-    name: "Samsung Galaxy S24",
-    price: 849,
-    description: "Flagship Android phone with AI features.",
-    categoryId: phones.id,
-    category: phones,
-  });
-  await manager.save(Product, samsung);
+  for (const category of leafCategories) {
+    for (let i = 0; i < PRODUCTS_PER_CATEGORY; i++) {
+      const product = manager.create(Product, {
+        name: faker.commerce.productName(),
+        price: Number(faker.commerce.price({ min: 10, max: 2000 })),
+        description: faker.commerce.productDescription(),
+        categoryId: category.id,
+        category,
+      });
+      await manager.save(Product, product);
+      products.push(product);
+    }
+  }
 
-  const macbook = manager.create(Product, {
-    name: 'MacBook Pro 14"',
-    price: 1999,
-    description: "Powerful laptop with M3 Pro chip.",
-    categoryId: laptops.id,
-    category: laptops,
-  });
-  await manager.save(Product, macbook);
-
-  const dellXps = manager.create(Product, {
-    name: "Dell XPS 15",
-    price: 1499,
-    description: "High-performance Windows laptop with OLED display.",
-    categoryId: laptops.id,
-    category: laptops,
-  });
-  await manager.save(Product, dellXps);
-
-  const tshirt = manager.create(Product, {
-    name: "Classic White Tee",
-    price: 29,
-    description: "100% organic cotton t-shirt.",
-    categoryId: tshirts.id,
-    category: tshirts,
-  });
-  await manager.save(Product, tshirt);
-
-  return { iphone, samsung, macbook, dellXps, tshirt };
+  return products;
 }
