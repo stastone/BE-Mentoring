@@ -11,7 +11,8 @@ const dataSource = new DataSource({
   type: "sqlite",
   database: "backend_mentoring.db",
   entities: [User, Product, Review, Category, Order, OrderItem],
-  synchronize: true,
+  migrations: ["src/database/migrations/*.ts"],
+  synchronize: false,
 });
 
 export default dataSource;
