@@ -1,23 +1,26 @@
+import { faker } from "@faker-js/faker";
 import type { EntityManager } from "typeorm";
 import { Order } from "../../models/Order.model.js";
 import type { seedUsers } from "./user.seed.js";
 
 type Users = Awaited<ReturnType<typeof seedUsers>>;
 
+const ORDERS_PER_USER = 3;
+const ORDER_STATUSES = ["pending", "completed", "cancelled"] as const;
+
 export async function seedOrders(manager: EntityManager, users: Users) {
-  const { alice, bob } = users;
+  const orders: Order[] = [];
 
-  const aliceOrder = manager.create(Order, {
-    status: "completed",
-    userId: alice.id,
-  });
-  await manager.save(Order, aliceOrder);
+  for (const user of users.users) {
+    for (let i = 0; i < ORDERS_PER_USER; i++) {
+      const order = manager.create(Order, {
+        status: faker.helpers.arrayElement(ORDER_STATUSES),
+        userId: user.id,
+      });
+      await manager.save(Order, order);
+      orders.push(order);
+    }
+  }
 
-  const bobOrder = manager.create(Order, {
-    status: "pending",
-    userId: bob.id,
-  });
-  await manager.save(Order, bobOrder);
-
-  return { aliceOrder, bobOrder };
+  return orders;
 }
