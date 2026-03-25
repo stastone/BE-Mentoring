@@ -4,7 +4,7 @@ import userRouter from "./src/routers/user.routes.js";
 import { errorHandler } from "./src/middlewares/errorHandler.js";
 import productRouter from "./src/routers/product.routes.js";
 import authRouter from "./src/routers/auth.routes.js";
-import dataSource from "./src/DataSource.js";
+import { sqliteDataSource, mongoDataSource } from "./src/DataSource.js";
 import categoryRouter from "./src/routers/category.routes.js";
 import orderRouter from "./src/routers/order.routes.js";
 
@@ -14,7 +14,10 @@ app.use(express.json());
 
 app.use(errorHandler);
 
-await dataSource.initialize();
+await Promise.all([
+  sqliteDataSource.initialize(),
+  mongoDataSource.initialize(),
+]);
 
 app.use("/auth", authRouter);
 

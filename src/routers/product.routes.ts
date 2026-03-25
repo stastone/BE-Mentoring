@@ -3,7 +3,7 @@ import ProductController from "../controllers/product/product.controller.js";
 import ProductService from "../services/product.service.js";
 
 import reviewRouter from "./review.routes.js";
-import dataSource from "../DataSource.js";
+import { sqliteDataSource } from "../DataSource.js";
 import type { Product } from "../models/Product.model.js";
 import { validate } from "../middlewares/validateSchema.js";
 import {
@@ -13,7 +13,7 @@ import {
 
 const productRouter = Router();
 
-const productRepository = dataSource.getRepository<Product>("Product");
+const productRepository = sqliteDataSource.getRepository<Product>("Product");
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 

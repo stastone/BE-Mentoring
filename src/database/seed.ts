@@ -1,4 +1,4 @@
-import dataSource from "../DataSource.js";
+import { sqliteDataSource } from "../DataSource.js";
 import { Category } from "../models/Category.model.js";
 import { User } from "../models/User.model.js";
 import { Product } from "../models/Product.model.js";
@@ -13,9 +13,9 @@ import { seedOrderItems } from "./seeds/orderItem.seed.js";
 import { seedReviews } from "./seeds/review.seed.js";
 
 async function seed() {
-  await dataSource.initialize();
+  await sqliteDataSource.initialize();
 
-  const queryRunner = dataSource.createQueryRunner();
+  const queryRunner = sqliteDataSource.createQueryRunner();
   await queryRunner.connect();
   await queryRunner.startTransaction();
 
@@ -41,7 +41,7 @@ async function seed() {
     process.exit(1);
   } finally {
     await queryRunner.release();
-    await dataSource.destroy();
+    await sqliteDataSource.destroy();
   }
 }
 

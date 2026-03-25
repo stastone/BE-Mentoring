@@ -1,4 +1,4 @@
-import dataSource from "../DataSource.js";
+import { sqliteDataSource } from "../DataSource.js";
 import { Product } from "../models/Product.model.js";
 import { Category } from "../models/Category.model.js";
 import { User } from "../models/User.model.js";
@@ -34,9 +34,9 @@ const entityMap = {
 };
 
 async function inspect(target: string) {
-  await dataSource.initialize();
+  await sqliteDataSource.initialize();
 
-  const manager = dataSource.manager;
+  const manager = sqliteDataSource.manager;
 
   const runInspection = async (key: keyof typeof entityMap) => {
     const config = entityMap[key];
@@ -72,7 +72,7 @@ async function inspect(target: string) {
     console.error("Unknown entity:", target);
   }
 
-  await dataSource.destroy();
+  await sqliteDataSource.destroy();
 }
 
 const target = process.argv[2] || "all";

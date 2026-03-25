@@ -1,6 +1,6 @@
 import { Router } from "express";
 import OrderService from "../services/order.service.js";
-import dataSource from "../DataSource.js";
+import { sqliteDataSource } from "../DataSource.js";
 import OrderController from "../controllers/order/order.controller.js";
 import type { Product } from "../models/Product.model.js";
 import type { Order } from "../models/Order.model.js";
@@ -14,15 +14,16 @@ import {
 
 const orderRouter = Router();
 
-const productRepository = dataSource.getRepository<Product>("Product");
-const orderRepository = dataSource.getRepository<Order>("Order");
-const orderItemRepository = dataSource.getRepository<OrderItem>("OrderItem");
+const productRepository = sqliteDataSource.getRepository<Product>("Product");
+const orderRepository = sqliteDataSource.getRepository<Order>("Order");
+const orderItemRepository =
+  sqliteDataSource.getRepository<OrderItem>("OrderItem");
 
 const orderService = new OrderService(
   orderRepository,
   productRepository,
   orderItemRepository,
-  dataSource,
+  sqliteDataSource,
 );
 
 const orderController = new OrderController(orderService);

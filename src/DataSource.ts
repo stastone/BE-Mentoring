@@ -1,5 +1,4 @@
 import { DataSource } from "typeorm";
-
 import { User } from "./models/User.model.js";
 import { Product } from "./models/Product.model.js";
 import { Review } from "./models/Review.model.js";
@@ -7,7 +6,7 @@ import { Category } from "./models/Category.model.js";
 import { Order } from "./models/Order.model.js";
 import { OrderItem } from "./models/OrderItem.model.js";
 
-const dataSource = new DataSource({
+export const sqliteDataSource = new DataSource({
   type: "sqlite",
   database: "backend_mentoring.db",
   entities: [User, Product, Review, Category, Order, OrderItem],
@@ -15,4 +14,9 @@ const dataSource = new DataSource({
   synchronize: false,
 });
 
-export default dataSource;
+export const mongoDataSource = new DataSource({
+  type: "mongodb",
+  url: `mongodb+srv://staan:password@1@cluster0.gqwnyyf.mongodb.net/`,
+  entities: [],
+  synchronize: false,
+});

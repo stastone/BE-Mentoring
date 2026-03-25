@@ -1,6 +1,6 @@
 import { Router } from "express";
 import UserController from "../controllers/user/user.controller.js";
-import dataSource from "../DataSource.js";
+import { sqliteDataSource } from "../DataSource.js";
 import UserService from "../services/user.service.js";
 import type { User } from "../models/User.model.js";
 import { restrictTo } from "../middlewares/restrictTo.js";
@@ -9,7 +9,7 @@ import { validate } from "../middlewares/validateSchema.js";
 
 const userRouter = Router();
 
-const userRepository = dataSource.getRepository<User>("User");
+const userRepository = sqliteDataSource.getRepository<User>("User");
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
