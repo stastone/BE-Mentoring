@@ -77,7 +77,7 @@ class ProductService {
   public getTopNProductsByRevenue = async (limit = 10) =>
     this._productRepository
       .createQueryBuilder("product")
-      .leftJoin(OrderItem, "item", "item.productId = product.id")
+      .innerJoin(OrderItem, "item", "item.productId = product.id")
       .select("product.id", "id")
       .addSelect("product.name", "name")
       .addSelect("product.price", "price")
