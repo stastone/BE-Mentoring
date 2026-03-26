@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { Cart } from "./models/Cart.model.js";
 import { User } from "./models/User.model.js";
 import { Product } from "./models/Product.model.js";
 import { Review } from "./models/Review.model.js";
@@ -17,6 +18,6 @@ export const sqliteDataSource = new DataSource({
 export const mongoDataSource = new DataSource({
   type: "mongodb",
   url: `mongodb+srv://staan:password@1@cluster0.gqwnyyf.mongodb.net/`,
-  entities: [],
+  entities: [Cart],
   synchronize: false,
 });
