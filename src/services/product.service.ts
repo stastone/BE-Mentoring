@@ -74,8 +74,8 @@ class ProductService {
     }
   };
 
-  public getTopProductsByRevenue = async (limit = 10) => {
-    return this._productRepository
+  public getTopNProductsByRevenue = async (limit = 10) =>
+    this._productRepository
       .createQueryBuilder("product")
       .leftJoin(OrderItem, "item", "item.productId = product.id")
       .select("product.id", "id")
@@ -90,7 +90,6 @@ class ProductService {
       .orderBy("SUM(item.quantity * item.purchasePrice)", "DESC")
       .limit(limit)
       .getRawMany();
-  };
 }
 
 export default ProductService;

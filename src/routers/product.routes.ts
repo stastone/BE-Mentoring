@@ -17,6 +17,8 @@ const productRepository = sqliteDataSource.getRepository<Product>("Product");
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
 
+productRouter.get("/top-revenue", productController.getProductsRevenue);
+
 productRouter
   .route("/:productId")
   .get(productController.getProductByIdRequestHandler)
