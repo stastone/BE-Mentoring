@@ -146,6 +146,23 @@ class OrderService {
 
     return this._orderRepository.save(order);
   };
+
+  public getOrderTotal = async (orderId: string) => {
+    const result = await this._orderRepository
+      .createQueryBuilder("order")
+      .innerJoin("order.items", "item")
+      .select("order.id", "orderId")
+      .addSelect("SUM(item.quantity * item.purchasePrice)", "total")
+      .where("order.id = :orderId", { orderId })
+      .groupBy("order.id")
+      .getRawOne();
+
+    if (!result) {
+      throw new NotFoundError("Order not found");
+    }
+
+    return result;
+  };
 }
 
 export default OrderService;
