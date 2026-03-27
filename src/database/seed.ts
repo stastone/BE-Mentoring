@@ -1,19 +1,21 @@
-import { sqliteDataSource } from "../DataSource.js";
+import { sqliteDataSource, mongoDataSource } from "../DataSource.js";
 import { Category } from "../models/Category.model.js";
 import { User } from "../models/User.model.js";
 import { Product } from "../models/Product.model.js";
 import { Order } from "../models/Order.model.js";
 import { OrderItem } from "../models/OrderItem.model.js";
 import { Review } from "../models/Review.model.js";
+import { Cart } from "../models/Cart.model.js";
 import { seedCategories } from "./seeds/category.seed.js";
 import { seedUsers } from "./seeds/user.seed.js";
 import { seedProducts } from "./seeds/product.seed.js";
 import { seedOrders } from "./seeds/order.seed.js";
 import { seedOrderItems } from "./seeds/orderItem.seed.js";
 import { seedReviews } from "./seeds/review.seed.js";
+import { seedCarts } from "./seeds/cart.seed.js";
 
 async function seed() {
-  await sqliteDataSource.initialize();
+  await Promise.all([sqliteDataSource.initialize(), mongoDataSource.initialize()]);
 
   const queryRunner = sqliteDataSource.createQueryRunner();
   await queryRunner.connect();
@@ -27,6 +29,8 @@ async function seed() {
     await queryRunner.manager.clear(Category);
     await queryRunner.manager.clear(User);
 
+    await mongoDataSource.getMongoRepository(Cart).deleteMany({});
+
     const categories = await seedCategories(queryRunner.manager);
     const users = await seedUsers(queryRunner.manager);
     const products = await seedProducts(queryRunner.manager, categories);
@@ -35,13 +39,15 @@ async function seed() {
     await seedReviews(queryRunner.manager, users, products);
 
     await queryRunner.commitTransaction();
+
+    await seedCarts(mongoDataSource.manager, users, products);
   } catch (err) {
     console.error("Seed failed: ", err);
     await queryRunner.rollbackTransaction();
     process.exit(1);
   } finally {
     await queryRunner.release();
-    await sqliteDataSource.destroy();
+    await Promise.all([sqliteDataSource.destroy(), mongoDataSource.destroy()]);
   }
 }
 
