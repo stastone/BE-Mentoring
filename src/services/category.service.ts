@@ -2,6 +2,7 @@ import type { Repository } from "typeorm";
 import { Category } from "../models/Category.model.js";
 import { NotFoundError } from "../types/Error.js";
 import type { CategoryType } from "../schemas/Category.schema.js";
+import { Product } from "../models/Product.model.js";
 
 class CategoryService {
   private readonly _categoryRepository: Repository<Category>;
@@ -89,6 +90,18 @@ class CategoryService {
     await this._categoryRepository.remove(category);
 
     return { success: true };
+  };
+
+  public getCategoriesWithProductCount = async () => {
+    return this._categoryRepository
+      .createQueryBuilder("category")
+      .leftJoin(Product, "product", "product.categoryId = category.id")
+      .select("category.id", "id")
+      .addSelect("category.name", "name")
+      .addSelect("category.parentCategoryId", "parentCategoryId")
+      .addSelect("COUNT(product.id)", "productCount")
+      .groupBy("category.id")
+      .getRawMany();
   };
 
   private deleteCategoryRecursively = async (id: string) => {

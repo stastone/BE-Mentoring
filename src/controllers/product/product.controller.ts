@@ -88,6 +88,20 @@ class ProductController extends BaseController {
 
     this.ok(res, null);
   });
+
+  public getProductsRevenue: RequestHandler<
+    { limit?: number },
+    ResponsePayload<Product[]>,
+    never
+  > = catchAsync(async (req, res) => {
+    const limit = req.query.limit
+      ? parseInt(req.query.limit as string, 10)
+      : 10;
+    const topProducts =
+      await this.productService.getTopNProductsByRevenue(limit);
+
+    this.ok(res, topProducts);
+  });
 }
 
 export default ProductController;

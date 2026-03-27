@@ -2,6 +2,7 @@ import type { Repository } from "typeorm";
 import type { Product } from "../models/Product.model.js";
 import { BadRequestError, NotFoundError } from "../types/Error.js";
 import type { ProductType } from "../schemas/Product.schema.js";
+import { OrderItem } from "../models/OrderItem.model.js";
 
 class ProductService {
   private readonly _productRepository: Repository<Product>;
@@ -11,7 +12,9 @@ class ProductService {
   }
 
   public getProducts = async () => {
-    return this._productRepository.find();
+    return this._productRepository.find({
+      relations: ["category"],
+    });
   };
 
   public getProductById = async (id: string) => {
@@ -70,6 +73,23 @@ class ProductService {
       throw new NotFoundError("Product not found");
     }
   };
+
+  public getTopNProductsByRevenue = async (limit = 10) =>
+    this._productRepository
+      .createQueryBuilder("product")
+      .innerJoin(OrderItem, "item", "item.productId = product.id")
+      .select("product.id", "id")
+      .addSelect("product.name", "name")
+      .addSelect("product.price", "price")
+      .addSelect(
+        "COALESCE(SUM(item.quantity * item.purchasePrice), 0)",
+        "totalRevenue",
+      )
+      .addSelect("COALESCE(SUM(item.quantity), 0)", "totalUnitsSold")
+      .groupBy("product.id")
+      .orderBy("SUM(item.quantity * item.purchasePrice)", "DESC")
+      .limit(limit)
+      .getRawMany();
 }
 
 export default ProductService;

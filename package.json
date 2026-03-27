@@ -5,16 +5,21 @@
     "build": "tsc",
     "dev": "tsc -w & node --watch dist/server.js",
     "seed:run": "node --loader ts-node/esm src/database/seed.ts",
-    "seed:verify": "node --loader ts-node/esm src/scripts/verifySeed.ts"
+    "seed:verify": "node --loader ts-node/esm src/scripts/verifySeed.ts",
+    "migration:generate": "typeorm-ts-node-esm migration:generate --dataSource src/DataSource.ts",
+    "migration:run": "typeorm-ts-node-esm migration:run --dataSource src/DataSource.ts",
+    "migration:revert": "typeorm-ts-node-esm migration:revert --dataSource src/DataSource.ts"
   },
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.4.0",
     "bcrypt": "^6.0.0",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "mongodb": "^6.21.0",
     "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "typeorm": "^0.3.28",

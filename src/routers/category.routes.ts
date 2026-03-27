@@ -1,7 +1,7 @@
 import { Router } from "express";
 import type { Category } from "../models/Category.model.js";
 import CategoryService from "../services/category.service.js";
-import dataSource from "../DataSource.js";
+import { sqliteDataSource } from "../DataSource.js";
 import CategoryController from "../controllers/category/category.controller.js";
 import { validate } from "../middlewares/validateSchema.js";
 import {
@@ -11,7 +11,7 @@ import {
 
 const categoryRouter = Router();
 
-const categoryRepository = dataSource.getRepository<Category>("Category");
+const categoryRepository = sqliteDataSource.getRepository<Category>("Category");
 const categoryService = new CategoryService(categoryRepository);
 const categoryController = new CategoryController(categoryService);
 
