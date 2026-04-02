@@ -6,6 +6,8 @@ import { Review } from "./models/Review.model.js";
 import { Category } from "./models/Category.model.js";
 import { Order } from "./models/Order.model.js";
 import { OrderItem } from "./models/OrderItem.model.js";
+import { Wishlist } from "./models/Wishlist.model.js";
+import { CartCheckoutSession } from "./models/CartCheckoutSession.model.js";
 
 export const sqliteDataSource = new DataSource({
   type: "sqlite",
@@ -18,6 +20,6 @@ export const sqliteDataSource = new DataSource({
 export const mongoDataSource = new DataSource({
   type: "mongodb",
   url: `mongodb+srv://staan:password@1@cluster0.gqwnyyf.mongodb.net/`,
-  entities: [Cart],
+  entities: [Cart, Wishlist, CartCheckoutSession],
   synchronize: false,
 });

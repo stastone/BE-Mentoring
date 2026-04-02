@@ -19,4 +19,10 @@ export class Cart {
 
   @Column()
   updatedAt!: Date;
+
+  @Column({ nullable: true })
+  wishlistId?: string | null;
+
+  @Column({ nullable: true })
+  activeCheckoutSessionId?: string | null;
 }
