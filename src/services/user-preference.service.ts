@@ -2,7 +2,7 @@ import type { MongoRepository } from "typeorm";
 import { Cart } from "../models/Cart.model.js";
 import { Wishlist } from "../models/Wishlist.model.js";
 import { CartCheckoutSession } from "../models/CartCheckoutSession.model.js";
-import type { UserPreferences } from "../models/UserPreferences.model.js";
+import type { UserPreferences } from "../schemas/UserPreferences.schema.js";
 
 class UserPreferenceService {
   private readonly _checkoutSessionRepository: MongoRepository<CartCheckoutSession>;
