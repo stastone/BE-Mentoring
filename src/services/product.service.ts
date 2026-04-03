@@ -3,6 +3,7 @@ import type { Product } from "../models/Product.model.js";
 import { BadRequestError, NotFoundError } from "../types/Error.js";
 import type { ProductType } from "../schemas/Product.schema.js";
 import { OrderItem } from "../models/OrderItem.model.js";
+import type { ProductRequestQuery } from "../queries/ProductRequestQuery.js";
 
 class ProductService {
   private readonly _productRepository: Repository<Product>;
@@ -11,11 +12,8 @@ class ProductService {
     this._productRepository = productRepository;
   }
 
-  public getProducts = async () => {
-    return this._productRepository.find({
-      relations: ["category"],
-    });
-  };
+  public getProducts = async (query: ProductRequestQuery) =>
+    this._productRepository.find(query.toFindManyOptions());
 
   public getProductById = async (id: string) => {
     const product = await this._productRepository.findOneBy({ id });
