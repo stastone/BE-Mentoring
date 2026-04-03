@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import { BaseController, type ResponsePayload } from "../base.controller.js";
 import type UserPreferenceService from "../../services/user-preference.service.js";
-import type { UserPreferences } from "../../models/UserPreferences.model.js";
+import type { UserPreferences } from "../../schemas/UserPreferences.schema.js";
 
 class AnalyticsController extends BaseController {
   private readonly _userPreferencesService: UserPreferenceService;
