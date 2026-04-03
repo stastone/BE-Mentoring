@@ -1,7 +1,6 @@
 import { Router } from "express";
 import ProductController from "../controllers/product/product.controller.js";
 import ProductService from "../services/product.service.js";
-
 import reviewRouter from "./review.routes.js";
 import { sqliteDataSource } from "../DataSource.js";
 import type { Product } from "../models/Product.model.js";
@@ -10,6 +9,7 @@ import {
   CreateProductSchema,
   UpdateProductSchema,
 } from "../schemas/Product.schema.js";
+import { ProductQuerySchema } from "../schemas/queries/ProductRequestQuery.schema.js";
 
 const productRouter = Router();
 
@@ -30,7 +30,10 @@ productRouter
 
 productRouter
   .route("/")
-  .get(productController.getProductsRequestHandler)
+  .get(
+    validate(ProductQuerySchema, "query"),
+    productController.getProductsRequestHandler,
+  )
   .post(
     validate(CreateProductSchema),
     productController.createProductRequestHandler,

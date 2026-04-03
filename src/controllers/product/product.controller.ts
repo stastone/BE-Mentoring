@@ -5,6 +5,7 @@ import { BaseController, type ResponsePayload } from "../base.controller.js";
 import { catchAsync } from "../../utils/catchAsync.js";
 import type { ProductType } from "../../schemas/Product.schema.js";
 import { ProductRequestQuery } from "../../queries/ProductRequestQuery.js";
+import type { ProductQueryType } from "../../schemas/queries/ProductRequestQuery.schema.js";
 
 class ProductController extends BaseController {
   private readonly productService: ProductService;
@@ -14,20 +15,12 @@ class ProductController extends BaseController {
   }
 
   public getProductsRequestHandler: RequestHandler<
-    null,
+    never,
     ResponsePayload<Product[]>,
-    null,
-    {
-      page?: string;
-      limit?: string;
-      name?: string;
-      categoryId?: string;
-      minPrice?: string;
-      maxPrice?: string;
-    }
+    never
   > = catchAsync(async (req, res) => {
     const requestQuery = new ProductRequestQuery(
-      req.query as Record<string, unknown>,
+      req.query as unknown as ProductQueryType,
     );
     const products = await this.productService.getProducts(requestQuery);
 
@@ -37,7 +30,7 @@ class ProductController extends BaseController {
   public getProductByIdRequestHandler: RequestHandler<
     { productId: string },
     ResponsePayload<Product>,
-    null
+    never
   > = catchAsync(async (req, res) => {
     const { productId } = req.params;
     const product = await this.productService.getProductById(productId);

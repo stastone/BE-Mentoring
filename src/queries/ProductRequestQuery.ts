@@ -1,6 +1,7 @@
 import { Between, Like, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import type { FindManyOptions, FindOptionsWhere } from "typeorm";
 import type { Product } from "../models/Product.model.js";
+import type { ProductQueryType } from "../schemas/queries/ProductRequestQuery.schema.js";
 import { RequestQuery } from "./RequestQuery.js";
 
 export interface ProductFilters {
@@ -11,17 +12,25 @@ export interface ProductFilters {
 }
 
 export class ProductRequestQuery extends RequestQuery<ProductFilters> {
+  private readonly _parsedQuery: ProductQueryType;
+
+  constructor(parsed: ProductQueryType) {
+    super(parsed);
+    this._parsedQuery = parsed;
+  }
+
   public getFilters(): ProductFilters {
     return {
-      name: this.getStringParam("name"),
-      categoryId: this.getStringParam("categoryId"),
-      minPrice: this.getNumberParam("minPrice"),
-      maxPrice: this.getNumberParam("maxPrice"),
+      name: this._parsedQuery.name,
+      categoryId: this._parsedQuery.categoryId,
+      minPrice: this._parsedQuery.minPrice,
+      maxPrice: this._parsedQuery.maxPrice,
     };
   }
 
   public toFindManyOptions(): FindManyOptions<Product> {
-    const { limit, skip } = this.getPagination();
+    const { page, limit } = this._parsedQuery;
+    const skip = (page - 1) * limit;
     const filters = this.getFilters();
 
     const where: FindOptionsWhere<Product> = {};
