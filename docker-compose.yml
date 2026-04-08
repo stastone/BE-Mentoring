@@ -3,7 +3,7 @@ services:
     image: "jc21/nginx-proxy-manager:latest"
     restart: unless-stopped
     environment:
-      TZ: "Australia/Brisbane"
+      TZ: "Lithuania/Vilnius"
     ports:
       - "80:80"
       - "81:81"
@@ -11,3 +11,24 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: .Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: "production"
+      TZ: "Lithuania/Vilnius"
+    expose:
+      - "3000"
+    networks:
+      - proxy-network
+    depends_on:
+      - app
+
+networks:
+  proxy-network:
+    driver: bridge
