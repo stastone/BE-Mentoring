@@ -13,7 +13,7 @@ export const validate =
     }
 
     if (source === "query") {
-      req.query = result.data as QueryString.ParsedQs;
+      Object.assign(req.query, result.data as QueryString.ParsedQs);
     } else {
       req.body = result.data;
     }

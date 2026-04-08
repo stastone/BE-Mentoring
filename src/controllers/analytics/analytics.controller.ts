@@ -19,7 +19,10 @@ class AnalyticsController extends BaseController {
   > = catchAsync(async (req, res) => {
     const { userId, limit } = req.params;
     const userPreferences =
-      await this._userPreferencesService.getUserPreferences({ userId, limit });
+      await this._userPreferencesService.getUserPreferences({
+        userId,
+        limit,
+      });
 
     this.ok(res, userPreferences);
   });
