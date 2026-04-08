@@ -15,9 +15,7 @@ cartRouter
   .patch(cartController.updateItemQuantityRequestHandler)
   .delete(cartController.removeItemRequestHandler);
 
-cartRouter
-  .route("/:userId/items")
-  .post(cartController.addItemRequestHandler);
+cartRouter.route("/:userId/items").post(cartController.addItemRequestHandler);
 
 cartRouter
   .route("/:userId")
