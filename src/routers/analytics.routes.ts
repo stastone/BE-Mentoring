@@ -7,6 +7,8 @@ import { FeatureFlag } from "../models/FeatureFlag.model.js";
 import { mongoDataSource } from "../DataSource.js";
 import { Cart } from "../models/Cart.model.js";
 import { checkFeatureFlag } from "../middlewares/checkFeatureFlag.js";
+import { validate } from "../middlewares/validateSchema.js";
+import { UserPreferencesQuerySchema } from "../schemas/queries/UserPreferencesQuery.schema.js";
 
 const analyticsRouter = Router();
 const cartRepository = mongoDataSource.getMongoRepository(Cart);
@@ -28,6 +30,7 @@ analyticsRouter
 
   .get(
     checkFeatureFlag(featureFlagRepository, "user-preferences-analytics"),
+    validate(UserPreferencesQuerySchema, "query"),
     analyticsController.getUserPreferencesRequestHandler,
   );
 

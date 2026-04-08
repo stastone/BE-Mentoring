@@ -5,7 +5,11 @@ import { NotFoundError } from "../types/Error.js";
 
 export const checkFeatureFlag =
   (repo: MongoRepository<FeatureFlag>, flagName: string) =>
-  async (_req: Request, _res: Response, next: NextFunction) => {
+  async <TRes, TReq extends Request>(
+    _req: TReq,
+    _res: TRes,
+    next: NextFunction,
+  ) => {
     const flag = await repo.findOne({ where: { name: flagName } });
 
     if (!flag || !flag.enabled) {
