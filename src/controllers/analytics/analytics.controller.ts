@@ -2,6 +2,8 @@ import type { RequestHandler } from "express";
 import { BaseController, type ResponsePayload } from "../base.controller.js";
 import type UserPreferenceService from "../../services/user-preference.service.js";
 import type { UserPreferences } from "../../schemas/UserPreferences.schema.js";
+import { catchAsync } from "../../utils/catchAsync.js";
+import type { UserPreferencesQueryType } from "../../schemas/queries/UserPreferencesQuery.schema.js";
 
 class AnalyticsController extends BaseController {
   private readonly _userPreferencesService: UserPreferenceService;
@@ -11,19 +13,16 @@ class AnalyticsController extends BaseController {
     this._userPreferencesService = userPreferencesService;
   }
   public getUserPreferencesRequestHandler: RequestHandler<
-    {
-      userId: string;
-      limit: number;
-    },
+    UserPreferencesQueryType,
     ResponsePayload<UserPreferences[]>,
-    null
-  > = async (req, res) => {
+    never
+  > = catchAsync(async (req, res) => {
     const { userId, limit } = req.params;
     const userPreferences =
       await this._userPreferencesService.getUserPreferences({ userId, limit });
 
     this.ok(res, userPreferences);
-  };
+  });
 }
 
 export default AnalyticsController;
