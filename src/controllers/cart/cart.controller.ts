@@ -1,4 +1,5 @@
 import type { RequestHandler } from "express";
+import type { Request } from "../../types/Request.js";
 import type CartService from "../../services/cart.service.js";
 import { BaseController, type ResponsePayload } from "../base.controller.js";
 import { catchAsync } from "../../utils/catchAsync.js";
@@ -12,31 +13,32 @@ class CartController extends BaseController {
   }
 
   public getCartRequestHandler: RequestHandler<
-    { userId: string },
+    never,
     ResponsePayload<unknown>
-  > = catchAsync(async (req, res) => {
-    const { userId } = req.params;
+  > = catchAsync(async (req: Request, res) => {
+    const userId = req.user!.id;
     const cart = await this._cartService.getCartByUserId(userId);
     this.ok(res, cart);
   });
 
   public addItemRequestHandler: RequestHandler<
-    { userId: string },
+    never,
     ResponsePayload<unknown>,
     { productId: string; quantity: number }
-  > = catchAsync(async (req, res) => {
-    const { userId } = req.params;
+  > = catchAsync(async (req: Request, res) => {
+    const userId = req.user!.id;
     const { productId, quantity } = req.body;
     const cart = await this._cartService.addItem(userId, productId, quantity);
     this.ok(res, cart);
   });
 
   public updateItemQuantityRequestHandler: RequestHandler<
-    { userId: string; productId: string },
+    { productId: string },
     ResponsePayload<unknown>,
     { quantity: number }
   > = catchAsync(async (req, res) => {
-    const { userId, productId } = req.params;
+    const userId = (req as Request).user!.id;
+    const { productId } = req.params;
     const { quantity } = req.body;
     const cart = await this._cartService.updateItemQuantity(
       userId,
@@ -47,19 +49,20 @@ class CartController extends BaseController {
   });
 
   public removeItemRequestHandler: RequestHandler<
-    { userId: string; productId: string },
+    { productId: string },
     ResponsePayload<null>
   > = catchAsync(async (req, res) => {
-    const { userId, productId } = req.params;
+    const userId = (req as Request).user!.id;
+    const { productId } = req.params;
     await this._cartService.removeItem(userId, productId);
     this.ok(res, null);
   });
 
   public clearCartRequestHandler: RequestHandler<
-    { userId: string },
+    never,
     ResponsePayload<null>
-  > = catchAsync(async (req, res) => {
-    const { userId } = req.params;
+  > = catchAsync(async (req: Request, res) => {
+    const userId = req.user!.id;
     await this._cartService.clearCart(userId);
     this.ok(res, null);
   });
