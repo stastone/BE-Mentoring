@@ -9,6 +9,8 @@ import { Cart } from "../models/Cart.model.js";
 import { checkFeatureFlag } from "../middlewares/checkFeatureFlag.js";
 import { validate } from "../middlewares/validateSchema.js";
 import { UserPreferencesQuerySchema } from "../schemas/queries/UserPreferencesQuery.schema.js";
+import { authenticateJWT } from "../middlewares/authenticateJWT.js";
+import { restrictTo } from "../middlewares/restrictTo.js";
 
 const analyticsRouter = Router();
 const cartRepository = mongoDataSource.getMongoRepository(Cart);
@@ -25,10 +27,13 @@ const userPreferencesService = new UserPreferenceService(
 
 const analyticsController = new AnalyticsController(userPreferencesService);
 
+analyticsRouter.use(authenticateJWT);
+
 analyticsRouter
   .route("/user-preferences")
 
   .get(
+    restrictTo(["admin"]),
     checkFeatureFlag(featureFlagRepository, "user-preferences-analytics"),
     validate(UserPreferencesQuerySchema, "query"),
     analyticsController.getUserPreferencesRequestHandler,

@@ -10,12 +10,15 @@ import {
   UpdateProductSchema,
 } from "../schemas/Product.schema.js";
 import { ProductQuerySchema } from "../schemas/queries/ProductRequestQuery.schema.js";
+import { authenticateJWT } from "../middlewares/authenticateJWT.js";
 
 const productRouter = Router();
 
 const productRepository = sqliteDataSource.getRepository<Product>("Product");
 const productService = new ProductService(productRepository);
 const productController = new ProductController(productService);
+
+productRouter.use(authenticateJWT);
 
 productRouter.get("/top-revenue", productController.getProductsRevenue);
 
