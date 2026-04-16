@@ -11,6 +11,7 @@ import {
   UpdateOrderStatusSchema,
   UpdateOrderItemSchema,
 } from "../schemas/Order.schema.js";
+import { authenticateJWT } from "../middlewares/authenticateJWT.js";
 
 const orderRouter = Router();
 
@@ -27,6 +28,8 @@ const orderService = new OrderService(
 );
 
 const orderController = new OrderController(orderService);
+
+orderRouter.use(authenticateJWT);
 
 orderRouter
   .route("/:orderId/status")
