@@ -1,10 +1,5 @@
 import { Column, Entity, ObjectIdColumn } from "typeorm";
-
-type CurrentEvent = {
-  eventId: string;
-  seq: number;
-  leaseUntil: Date;
-};
+import type { CurrentEvent } from "../types/CurrentEvent.js";
 
 @Entity("subscriptions")
 export class Subscription {

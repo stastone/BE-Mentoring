@@ -1,7 +1,7 @@
 import { Column, Entity, ObjectIdColumn } from "typeorm";
 
 @Entity("counters")
-export class TopiCounter {
+export class TopicCounter {
   @ObjectIdColumn()
   _id!: string;
 

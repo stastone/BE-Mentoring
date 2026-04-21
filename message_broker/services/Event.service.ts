@@ -1,6 +1,6 @@
 import { MongoRepository, MongoServerError } from "typeorm";
-import { Event } from "./models/Event.model.js";
-import { TopicCounter } from "./models/TopicCounter.model.js";
+import type { TopicCounter } from "../models/TopicCounter.model.js";
+import type { Event } from "../models/Event.model.js";
 import { InternalServerError, NotFoundError } from "../../src/types/Error.js";
 
 class EventService {
