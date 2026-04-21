@@ -3,7 +3,7 @@ import { Event } from "./models/Event.model.js";
 import { TopicCounter } from "./models/TopicCounter.model.js";
 import { InternalServerError, NotFoundError } from "../../src/types/Error.js";
 
-export class EventStore {
+class EventService {
   private readonly _eventRepository: MongoRepository<Event>;
   private readonly _counterRepository: MongoRepository<TopicCounter>;
 
@@ -39,6 +39,13 @@ export class EventStore {
     }
   };
 
+  public getNextEvent = async (topic: string, seq: number) => {
+    return this._eventRepository.findOne({
+      where: { topic, seq: { $gt: seq } },
+      order: { seq: "ASC" },
+    });
+  };
+
   private incrementCounter = async (topic: string) => {
     const result = await this._counterRepository.findOneAndUpdate(
       { _id: topic },
@@ -68,3 +75,5 @@ export class EventStore {
     return event;
   };
 }
+
+export default EventService;
