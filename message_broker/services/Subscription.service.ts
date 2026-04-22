@@ -1,7 +1,7 @@
 import type { UpdateResult } from "mongodb";
 import { MongoRepository } from "typeorm";
 import type { Subscription } from "../models/Subscription.model.js";
-import { InternalServerError, NotFoundError } from "../../src/types/Error.js";
+import { InternalServerError } from "../../src/types/Error.js";
 import type { CurrentEvent } from "../types/CurrentEvent.js";
 
 class SubscriptionService {
@@ -10,17 +10,10 @@ class SubscriptionService {
     this._subscriptionRepository = subscriptionRepository;
   }
 
-  public getSubscriptionByKey = async (consumerId: string, topic: string) => {
-    const subscription = await this._subscriptionRepository.findOneBy({
+  public getSubscriptionByKey = async (consumerId: string, topic: string) =>
+    this._subscriptionRepository.findOneBy({
       _id: this.subscriptionKey(consumerId, topic),
     });
-
-    if (!subscription) {
-      throw new NotFoundError("Subscription not found");
-    }
-
-    return subscription;
-  };
 
   public createSubscription = async (
     consumerId: string,
