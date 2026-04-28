@@ -51,10 +51,7 @@ export class MessageBroker {
     return { offset: startOffset, created: true };
   };
 
-  public claimNext = async (
-    consumerId: string,
-    topic: string,
-  ): Promise<DeliveredEvent | null> => {
+  public claimNext = async (consumerId: string, topic: string) => {
     const subscription = await this._subscriptionService.getSubscriptionByKey(
       consumerId,
       topic,
@@ -119,7 +116,7 @@ export class MessageBroker {
     consumerId: string,
     topic: string,
     eventId: string,
-  ): Promise<boolean> => {
+  ) => {
     const subscription = await this._subscriptionService.getSubscriptionByKey(
       consumerId,
       topic,
@@ -145,7 +142,7 @@ export class MessageBroker {
     event: Event,
     leaseUntil: Date,
     redelivered: boolean,
-  ): DeliveredEvent => ({
+  ) => ({
     _id: event._id,
     topic: event.topic,
     seq: event.seq,

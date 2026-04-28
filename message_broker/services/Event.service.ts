@@ -15,11 +15,7 @@ class EventService {
     this._counterRepository = counterRepository;
   }
 
-  public publish = async <T>(
-    topic: string,
-    eventId: string,
-    payload: T,
-  ): Promise<{ eventId: string; seq?: number; duplicate: boolean }> => {
+  public publish = async <T>(topic: string, eventId: string, payload: T) => {
     const seq = await this.incrementCounter(topic);
 
     try {
