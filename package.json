@@ -5,6 +5,8 @@
     "build": "tsc",
     "dev": "tsc -w & node --watch dist/server.js",
     "broker:dev": "tsc -w & node --watch dist/message_broker/server.js",
+    "inventory:dev": "tsc -w & node --watch dist/microservices/inventory_service/server.js",
+    "notifications:dev": "tsc -w & node --watch dist/microservices/notifications_service/server.js",
     "seed:run": "node --loader ts-node/esm src/database/seed.ts",
     "seed:verify": "node --loader ts-node/esm src/scripts/verifySeed.ts",
     "migration:generate": "typeorm-ts-node-esm migration:generate --dataSource src/DataSource.ts",
