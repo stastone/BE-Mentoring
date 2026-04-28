@@ -5,11 +5,7 @@ import type { SubscriptionResult } from "../types/SubscriptionResult.js";
 export class BrokerClient {
   private readonly _baseUrl: string = "http://localhost:3100";
 
-  public publish = async <T>(
-    topic: string,
-    eventId: string,
-    payload: T,
-  ): Promise<PublishedEvent> => {
+  public publish = async <T>(topic: string, eventId: string, payload: T) => {
     const res = await fetch(
       `${this._baseUrl}/topics/${encodeURIComponent(topic)}/publish`,
       {
@@ -25,7 +21,7 @@ export class BrokerClient {
     consumerId: string,
     topic: string,
     fromStart = false,
-  ): Promise<SubscriptionResult> => {
+  ) => {
     const res = await fetch(
       `${this._baseUrl}/topics/${encodeURIComponent(topic)}/subscribe`,
       {
@@ -37,10 +33,7 @@ export class BrokerClient {
     return this.parseJsonData<SubscriptionResult>(res, "subscribe");
   };
 
-  public poll = async (
-    consumerId: string,
-    topic: string,
-  ): Promise<DeliveredEvent | null> => {
+  public poll = async (consumerId: string, topic: string) => {
     const url = `${this._baseUrl}/topics/${encodeURIComponent(topic)}/poll?consumerId=${encodeURIComponent(consumerId)}`;
     const res = await fetch(url);
 
@@ -55,7 +48,7 @@ export class BrokerClient {
     consumerId: string,
     topic: string,
     eventId: string,
-  ): Promise<boolean> => {
+  ) => {
     const res = await fetch(
       `${this._baseUrl}/topics/${encodeURIComponent(topic)}/ack`,
       {
@@ -73,6 +66,7 @@ export class BrokerClient {
       const text = await res.text();
       throw new Error(`broker ${op} failed (${res.status}): ${text}`);
     }
+
     const body = (await res.json()) as { data: T };
     return body.data;
   };
