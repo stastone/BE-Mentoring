@@ -12,6 +12,7 @@ import {
   UpdateOrderItemSchema,
 } from "../schemas/Order.schema.js";
 import { authenticateJWT } from "../middlewares/authenticateJWT.js";
+import { BrokerClient } from "../../message_broker/client/BrokerClient.js";
 
 const orderRouter = Router();
 
@@ -20,11 +21,14 @@ const orderRepository = sqliteDataSource.getRepository<Order>("Order");
 const orderItemRepository =
   sqliteDataSource.getRepository<OrderItem>("OrderItem");
 
+const brokerClient = new BrokerClient();
+
 const orderService = new OrderService(
   orderRepository,
   productRepository,
   orderItemRepository,
   sqliteDataSource,
+  brokerClient,
 );
 
 const orderController = new OrderController(orderService);

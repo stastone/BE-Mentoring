@@ -7,6 +7,7 @@ import {
   InternalServerError,
   NotFoundError,
 } from "../types/Error.js";
+import type { BrokerClient } from "../../message_broker/client/BrokerClient.js";
 
 interface CreateOrderItemPayload {
   productId: string;
@@ -18,17 +19,20 @@ class OrderService {
   private readonly _orderItemRepository: Repository<OrderItem>;
   private readonly _productRepository: Repository<Product>;
   private readonly _dataSource: DataSource;
+  private readonly _brokerClient: BrokerClient;
 
   constructor(
     orderRepository: Repository<Order>,
     productRepository: Repository<Product>,
     orderItemRepository: Repository<OrderItem>,
     dataSource: DataSource,
+    brokerClient: BrokerClient,
   ) {
     this._orderRepository = orderRepository;
     this._productRepository = productRepository;
     this._orderItemRepository = orderItemRepository;
     this._dataSource = dataSource;
+    this._brokerClient = brokerClient;
   }
 
   public getOrdersByUser = async (userId: string) => {
@@ -92,6 +96,23 @@ class OrderService {
 
     if (!order) {
       throw new InternalServerError("Failed to create order");
+    }
+
+    // NOTE: publish-from-handler is not transactional with the DB write.
+    // A real system should use an outbox table; acceptable for this lecture.
+    try {
+      await this._brokerClient.publish("orders", order.id, {
+        orderId: order.id,
+        userId: order.userId,
+        status: order.status,
+        items: order.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          purchasePrice: item.purchasePrice,
+        })),
+      });
+    } catch (err) {
+      console.error(`Failed to publish order.created for ${order.id}:`, err);
     }
 
     return order;
