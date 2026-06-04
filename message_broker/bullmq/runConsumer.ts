@@ -22,7 +22,6 @@ export const runConsumer = (options: ConsumerOptions): Worker => {
         _id: job.data.eventId,
         topic: job.data.topic,
         payload: job.data.payload,
-        // A previous attempt ran for this job => it is a redelivery.
         redelivered: (job.attemptsStarted ?? 1) > 1,
         attemptsMade: job.attemptsMade,
       });

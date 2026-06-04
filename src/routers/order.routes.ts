@@ -13,6 +13,8 @@ import {
 } from "../schemas/Order.schema.js";
 import { authenticateJWT } from "../middlewares/authenticateJWT.js";
 import { BrokerPublisher } from "../../message_broker/bullmq/BrokerPublisher.js";
+import EventBus from "../events/EventBus.js";
+import { forwardOrderCreated } from "../events/listeners/forwardOrderCreated.js";
 
 const orderRouter = Router();
 
@@ -22,13 +24,16 @@ const orderItemRepository =
   sqliteDataSource.getRepository<OrderItem>("OrderItem");
 
 const brokerPublisher = new BrokerPublisher();
+const eventBus = new EventBus();
+
+eventBus.on("OrderCreated", forwardOrderCreated(brokerPublisher));
 
 const orderService = new OrderService(
   orderRepository,
   productRepository,
   orderItemRepository,
   sqliteDataSource,
-  brokerPublisher,
+  eventBus,
 );
 
 const orderController = new OrderController(orderService);
