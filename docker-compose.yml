@@ -22,12 +22,25 @@ services:
     environment:
       NODE_ENV: "production"
       TZ: "Lithuania/Vilnius"
+      REDIS_URL: "redis://redis:6379"
     expose:
       - "3000"
     networks:
       - proxy-network
     depends_on:
       - app
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - proxy-network
 
 networks:
   proxy-network:
