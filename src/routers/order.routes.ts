@@ -12,7 +12,7 @@ import {
   UpdateOrderItemSchema,
 } from "../schemas/Order.schema.js";
 import { authenticateJWT } from "../middlewares/authenticateJWT.js";
-import { BrokerClient } from "../../message_broker/client/BrokerClient.js";
+import { BrokerPublisher } from "../../message_broker/bullmq/BrokerPublisher.js";
 
 const orderRouter = Router();
 
@@ -21,14 +21,14 @@ const orderRepository = sqliteDataSource.getRepository<Order>("Order");
 const orderItemRepository =
   sqliteDataSource.getRepository<OrderItem>("OrderItem");
 
-const brokerClient = new BrokerClient();
+const brokerPublisher = new BrokerPublisher();
 
 const orderService = new OrderService(
   orderRepository,
   productRepository,
   orderItemRepository,
   sqliteDataSource,
-  brokerClient,
+  brokerPublisher,
 );
 
 const orderController = new OrderController(orderService);

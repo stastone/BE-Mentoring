@@ -7,7 +7,7 @@ import {
   InternalServerError,
   NotFoundError,
 } from "../types/Error.js";
-import type { BrokerClient } from "../../message_broker/client/BrokerClient.js";
+import type { BrokerPublisher } from "../../message_broker/bullmq/BrokerPublisher.js";
 
 interface CreateOrderItemPayload {
   productId: string;
@@ -19,20 +19,20 @@ class OrderService {
   private readonly _orderItemRepository: Repository<OrderItem>;
   private readonly _productRepository: Repository<Product>;
   private readonly _dataSource: DataSource;
-  private readonly _brokerClient: BrokerClient;
+  private readonly _brokerPublisher: BrokerPublisher;
 
   constructor(
     orderRepository: Repository<Order>,
     productRepository: Repository<Product>,
     orderItemRepository: Repository<OrderItem>,
     dataSource: DataSource,
-    brokerClient: BrokerClient,
+    brokerPublisher: BrokerPublisher,
   ) {
     this._orderRepository = orderRepository;
     this._productRepository = productRepository;
     this._orderItemRepository = orderItemRepository;
     this._dataSource = dataSource;
-    this._brokerClient = brokerClient;
+    this._brokerPublisher = brokerPublisher;
   }
 
   public getOrdersByUser = async (userId: string) => {
@@ -101,7 +101,7 @@ class OrderService {
     // NOTE: publish-from-handler is not transactional with the DB write.
     // A real system should use an outbox table; acceptable for this lecture.
     try {
-      await this._brokerClient.publish("orders", order.id, {
+      await this._brokerPublisher.publish("orders", order.id, {
         orderId: order.id,
         userId: order.userId,
         status: order.status,
