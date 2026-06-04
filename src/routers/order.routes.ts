@@ -15,6 +15,7 @@ import { authenticateJWT } from "../middlewares/authenticateJWT.js";
 import { BrokerPublisher } from "../../message_broker/bullmq/BrokerPublisher.js";
 import EventBus from "../events/EventBus.js";
 import { forwardOrderCreated } from "../events/listeners/forwardOrderCreated.js";
+import { generateInvoicePdf } from "../events/listeners/invoicePdfCreated.js";
 
 const orderRouter = Router();
 
@@ -27,6 +28,7 @@ const brokerPublisher = new BrokerPublisher();
 const eventBus = new EventBus();
 
 eventBus.on("OrderCreated", forwardOrderCreated(brokerPublisher));
+eventBus.on("OrderCreated", generateInvoicePdf);
 
 const orderService = new OrderService(
   orderRepository,
