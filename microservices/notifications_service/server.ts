@@ -3,8 +3,7 @@ import express from "express";
 import { notificationsDataSource } from "./DataSource.js";
 import { Notification } from "./models/Notification.model.js";
 import { NotificationService } from "./NotificationService.js";
-import { BrokerClient } from "../../message_broker/client/BrokerClient.js";
-import { runConsumer } from "../../message_broker/client/runConsumer.js";
+import { runConsumer } from "../../message_broker/bullmq/runConsumer.js";
 import type { InventoryOutcomePayload, OrderCreatedPayload } from "./types.js";
 
 const PORT = 3300;
@@ -17,7 +16,6 @@ const start = async () => {
   const notificationService = new NotificationService(
     notificationsDataSource.getMongoRepository(Notification),
   );
-  const brokerClient = new BrokerClient();
 
   const app = express();
   app.get("/health", (_req, res) => res.json({ status: "ok" }));
@@ -25,8 +23,7 @@ const start = async () => {
     console.log(`Notifications service listening on http://localhost:${PORT}`);
   });
 
-  const ordersConsumer = runConsumer({
-    client: brokerClient,
+  runConsumer({
     consumerId: ORDERS_CONSUMER_ID,
     topic: "orders",
     handler: async (event) => {
@@ -42,8 +39,7 @@ const start = async () => {
     },
   });
 
-  const inventoryConsumer = runConsumer({
-    client: brokerClient,
+  runConsumer({
     consumerId: INVENTORY_CONSUMER_ID,
     topic: "inventory",
     handler: async (event) => {
@@ -62,11 +58,6 @@ const start = async () => {
           : `Out of stock: ${JSON.stringify(payload.failures ?? [])}`,
       });
     },
-  });
-
-  Promise.all([ordersConsumer, inventoryConsumer]).catch((err) => {
-    console.error("[notifications] consumer loop crashed:", err);
-    process.exit(1);
   });
 };
 
