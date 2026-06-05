@@ -12,7 +12,10 @@ import {
   UpdateOrderItemSchema,
 } from "../schemas/Order.schema.js";
 import { authenticateJWT } from "../middlewares/authenticateJWT.js";
-import { BrokerClient } from "../../message_broker/client/BrokerClient.js";
+import { BrokerPublisher } from "../../message_broker/bullmq/BrokerPublisher.js";
+import EventBus from "../events/EventBus.js";
+import { forwardOrderCreated } from "../events/listeners/forwardOrderCreated.js";
+import { generateInvoicePdf } from "../events/listeners/invoicePdfCreated.js";
 
 const orderRouter = Router();
 
@@ -21,14 +24,18 @@ const orderRepository = sqliteDataSource.getRepository<Order>("Order");
 const orderItemRepository =
   sqliteDataSource.getRepository<OrderItem>("OrderItem");
 
-const brokerClient = new BrokerClient();
+const brokerPublisher = new BrokerPublisher();
+const eventBus = new EventBus();
+
+eventBus.on("OrderCreated", forwardOrderCreated(brokerPublisher));
+eventBus.on("OrderCreated", generateInvoicePdf);
 
 const orderService = new OrderService(
   orderRepository,
   productRepository,
   orderItemRepository,
   sqliteDataSource,
-  brokerClient,
+  eventBus,
 );
 
 const orderController = new OrderController(orderService);

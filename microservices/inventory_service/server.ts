@@ -3,8 +3,8 @@ import express from "express";
 import { inventoryDataSource } from "./DataSource.js";
 import { Stock } from "./models/Stock.model.js";
 import { StockService } from "./StockService.js";
-import { BrokerClient } from "../../message_broker/client/BrokerClient.js";
-import { runConsumer } from "../../message_broker/client/runConsumer.js";
+import { BrokerPublisher } from "../../message_broker/bullmq/BrokerPublisher.js";
+import { runConsumer } from "../../message_broker/bullmq/runConsumer.js";
 
 const PORT = Number(process.env.INVENTORY_PORT ?? 3200);
 const CONSUMER_ID = process.env.INVENTORY_CONSUMER_ID ?? "inventory-service";
@@ -21,7 +21,7 @@ const start = async () => {
   const stockService = new StockService(
     inventoryDataSource.getMongoRepository(Stock),
   );
-  const brokerClient = new BrokerClient();
+  const brokerPublisher = new BrokerPublisher();
 
   const app = express();
   app.get("/health", (_req, res) => res.json({ status: "ok" }));
@@ -38,25 +38,24 @@ const start = async () => {
   });
 
   runConsumer({
-    client: brokerClient,
     consumerId: CONSUMER_ID,
     topic: "orders",
     handler: async (event) => {
       const payload = event.payload as OrderCreatedPayload;
       console.log(
-        `[inventory] received order.created ${payload.orderId} (seq=${event.seq}, redelivered=${event.redelivered})`,
+        `[inventory] received order.created ${payload.orderId} (redelivered=${event.redelivered})`,
       );
 
       const result = await stockService.reserve(payload.items);
 
       if (result.ok) {
-        await brokerClient.publish("inventory", payload.orderId, {
+        await brokerPublisher.publish("inventory", payload.orderId, {
           orderId: payload.orderId,
           outcome: "reserved",
         });
         console.log(`[inventory] reserved stock for ${payload.orderId}`);
       } else {
-        await brokerClient.publish("inventory", payload.orderId, {
+        await brokerPublisher.publish("inventory", payload.orderId, {
           orderId: payload.orderId,
           outcome: "rejected",
           failures: result.failures,
@@ -67,9 +66,6 @@ const start = async () => {
         );
       }
     },
-  }).catch((err) => {
-    console.error("[inventory] consumer loop crashed:", err);
-    process.exit(1);
   });
 };
 

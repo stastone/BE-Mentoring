@@ -20,9 +20,11 @@
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
     "bcrypt": "^6.0.0",
+    "bullmq": "^5.76.10",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^6.21.0",
+    "pdfkit": "^0.18.0",
     "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "typeorm": "^0.3.28",
@@ -32,6 +34,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10"
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/pdfkit": "^0.17.6"
   }
 }
